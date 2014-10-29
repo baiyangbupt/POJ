@@ -1,0 +1,71 @@
+//
+//  main.cpp
+//  POJ1595
+//
+//  Created by B-YMac on 14-10-3.
+//  Copyright (c) 2014年 B-YMac. All rights reserved.
+//
+
+#include <iostream>
+using namespace std;
+
+int n,c,prime[2001]={1,1};
+
+bool isprime(int x){
+    for(int i = 2; i*i <= x; i++)
+        if(x%i==0)
+            return 0;
+    
+    return 1;
+}
+
+
+void init(){
+    int cnt = 2;
+    for(int i = 2; i <= 2000; i++)
+        if(isprime(i))
+            prime[cnt++] = i;
+    
+}
+
+//1,2,3,5,7,11,13,17,19
+
+int main(int argc, const char * argv[])
+{
+    init();
+    
+    //cout << prime[1] << ' '<< prime[2] << ' '<< prime[3] << endl;
+    while(cin>>n>>c){
+        int i = 1;
+        while(prime[i]<=n)
+            i++;
+        
+        i--;
+        
+        //cout << i << endl;
+        cout << n << ' ' << c <<':';
+        
+        if(i%2&&2*c-1>=i||2*c>=i){
+            for(int j = 1; j <= i; j++)
+                cout <<' '<< prime[j];
+            cout << endl << endl;
+            continue;
+            
+        }
+        
+        if(i%2){
+            int center = i/2+1;
+            for(int dx = center-c+1; dx<= center+c-1; dx++)
+                cout << ' '<< prime[dx];
+        }
+        else{
+            int center = i/2;
+            for(int dx = center-c+1; dx <= center+c; dx++)
+                cout << ' ' << prime[dx];
+        }
+        
+        cout << endl << endl;
+    }
+    return 0;
+}
+

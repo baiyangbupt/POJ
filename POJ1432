@@ -1,0 +1,123 @@
+//
+//  main.cpp
+//  POJ1432
+//
+//  Created by B-YMac on 14-7-13.
+//  Copyright (c) 2014年 B-YMac. All rights reserved.
+//
+
+#include <iostream>
+#include<string>
+#include<queue>
+using namespace std;
+
+string morsetable[26] = {".-","-...","-.-.","-..",".","..-.","--.","....","..",".---","-.-",".-..","--","-.","---",".--.","--.-",".-.","...","-","..-","...-",".--","-..-","-.--","--.."};
+
+struct node{
+    node *next[2],*fail;
+    int id,num;
+    node(){
+        memset(next,0,sizeof(next));
+        fail = NULL;
+        id = -1;
+        num = 0;
+    }
+};
+
+bool map(char c){
+    return c=='-';
+}
+
+void insert(node *rt, string s, int id){
+    int i = 0;
+    node *p = rt;
+    while(i<s.size()){
+        if(p->next[map(s[i])]==NULL) p->next[map(s[i])] = new node;
+        p = p->next[map(s[i])];
+        i++;
+    }
+    if(p->id>=0)
+        p->num++;
+    else
+        p->id = id, p->num=1;
+}
+
+void build(node *rt){
+    queue<node*> q;
+    q.push(rt);
+    while(!q.empty()){
+        node *p = q.front();
+        q.pop();
+        for(int i = 0; i < 2; i++)
+            if(p->next[i]!=NULL){
+                if(p==rt)
+                    p->next[i]->fail = rt;
+                else{
+                    node *t = p->fail;
+                    while(t!=NULL){
+                        if(t->next[i]!=NULL){
+                            p->next[i]->fail = t->next[i];
+                            break;
+                        }
+                        t = t->fail;
+                    }
+                    if(t==NULL)
+                        p->next[i]->fail = rt;
+                }
+                q.push(p->next[i]);
+            }
+    }
+}
+
+int dp[10001],n;
+string s,dic[10001];
+
+void query(node *rt){
+    int i = 0;
+    node *p = rt;
+    while(i<s.size()){
+        while(p->next[map(s[i])]==NULL&&p!=rt)
+            p = p->fail;
+        p = p->next[map(s[i])];
+        p = p==NULL?rt:p;
+        node *t = p;
+        while(t!=rt){
+            if(t->id>=0){
+                if(i-dic[t->id].size()==-1)
+                    dp[i]+=t->num;
+                else
+                    dp[i]+=t->num*dp[i-dic[t->id].size()];
+                //cout << i << ' '<< dp[i] << endl;
+            }
+            t = t->fail;
+        }
+        i++;
+    }
+}
+
+int main(int argc, const char * argv[])
+{
+    int nc;
+    cin >> nc;
+    while(nc--){
+        node *rt = new node;
+        memset(dp,0,sizeof(dp));
+        cin >> s;
+        cin >> n;
+        for(int i = 0; i < n; i++){
+            string t,res;
+            cin >> t;
+            for(int j = 0; j < t.size(); j++)
+                res.append(morsetable[t[j]-'A']);
+            dic[i] = res;
+            //cout << res << endl;
+            insert(rt,res,i);
+        }
+        build(rt);
+        query(rt);
+        cout << dp[s.size()-1] << endl;
+        
+    }
+    return 0;
+}
+

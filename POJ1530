@@ -1,0 +1,73 @@
+//
+//  main.cpp
+//  POJ1530
+//
+//  Created by B-YMac on 14-8-9.
+//  Copyright (c) 2014年 B-YMac. All rights reserved.
+//
+
+#include <iostream>
+#include<string>
+using namespace std;
+
+bool isslump(string s){
+    if(s.size()<3)
+        return 0;
+    
+    if(s[0]!='E'&&s[0]!='D')
+        return 0;
+    
+    int i = 1;
+    while(i<s.size()&&s[i]=='F')
+        i++;
+    if(i==s.size())
+        return 0;
+    
+    return i==s.size()-1&&s[i]=='G'||isslump(s.substr(i));
+}
+
+bool isslimp(string s){
+    int len = s.size();
+    
+    if(len<2)
+        return 0;
+    if(s[0]!='A')
+        return 0;
+    if(len==2)
+        return s[1]=='H';
+    
+    
+    return s[1]=='B'&&isslimp(s.substr(2,len-3))&&s[len-1]=='C'||isslump(s.substr(1,len-2))&&s[len-1]=='C';
+}
+
+bool isslurpy(string s){
+    int len = s.size();
+    if(len<5)
+        return 0;
+    
+    int i = len-1;
+    while(i>=0&&s[i]!='C'&&s[i]!='H')
+        i--;
+    if(i<0)
+        return 0;
+    
+    return isslimp(s.substr(0,i+1))&&isslump(s.substr(i+1));
+}
+
+int main(int argc, const char * argv[])
+{
+    string s;
+    int nc;
+    cin >> nc;
+    cout << "SLURPYS OUTPUT" << endl;
+    while(nc--){
+        cin >> s;
+        if(isslurpy(s))
+            cout << "YES" << endl;
+        else
+            cout << "NO" << endl;
+    }
+    cout << "END OF OUTPUT";
+    return 0;
+}
+

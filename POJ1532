@@ -1,0 +1,44 @@
+//
+//  main.cpp
+//  POJ1532
+//
+//  Created by B-YMac on 14-8-10.
+//  Copyright (c) 2014年 B-YMac. All rights reserved.
+//
+
+#include <iostream>
+using namespace std;
+
+char grid[300][15000],l,w,horis[300];
+
+double cal(int lower, int higher){
+    if(higher==lower){
+        double res = 0;
+        for(int i = 0; i < w; i++)
+    }
+    int m = horis[lower], baseline = lower;
+    
+    for(int i = lower; i <= higher; i++)
+        if(horis[i]>m)
+            m = horis[i], baseline = i;
+    
+    
+    
+}
+
+int main(int argc, const char * argv[])
+{
+    while(cin>>l>>w,l||w){
+        memset(horis,0,sizeof(horis));;
+        for(int i = 1; i <= w; i++){
+            for(int j = l; j >= 1; j--){
+                cin >> grid[j][i];
+                if(grid[j][i]=='-')
+                    horis[j]++;
+        }
+        
+        double res = cal(0,l-1);
+    }
+    return 0;
+}
+

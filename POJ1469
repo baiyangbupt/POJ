@@ -1,0 +1,62 @@
+//
+//  main.cpp
+//  POJ1469
+//
+//  Created by B-YMac on 14-7-19.
+//  Copyright (c) 2014年 B-YMac. All rights reserved.
+//
+
+#include <iostream>
+using namespace std;
+
+int match[101],prematch[301],p,n;
+bool visit[301],adj[101][301];
+
+bool dfs(int p){
+    for(int i = 1; i<=n; i++)
+        if(adj[p][i]&&visit[i]==0){
+            visit[i] = 1;
+            if(prematch[i]==-1||dfs(prematch[i])){
+                prematch[i] = p;
+                match[p] = i;
+                return 1;
+            }
+        }
+    return 0;
+}
+
+int main(int argc, const char * argv[])
+{
+    int nc;
+    scanf("%d",&nc);
+    while(nc--){
+        memset(adj,0,sizeof(adj));
+        cin >> p >> n;
+        for(int i = 1; i <= p; i++){
+            int num;
+            scanf("%d",&num);
+            for(int j = 0; j < num; j++){
+                int t;
+                scanf("%d",&t);
+                adj[i][t] = 1;
+            }
+        }
+        
+        memset(match,-1,sizeof(match));
+        memset(prematch,-1,sizeof(prematch));
+        
+        int res = 0;
+        for(int i = 1; i <= p; i++)
+            if(match[i]==-1){
+                memset(visit,0,sizeof(visit));
+                if(dfs(i))
+                    res++;
+            }
+        if(res==p)
+            printf("YES\n");
+        else
+            printf("NO\n");
+    }
+    return 0;
+}
+

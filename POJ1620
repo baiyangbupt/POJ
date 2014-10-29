@@ -1,0 +1,55 @@
+//
+//  main.cpp
+//  POJ1620
+//
+//  Created by B-YMac on 14-9-14.
+//  Copyright (c) 2014年 B-YMac. All rights reserved.
+//
+
+#include <iostream>
+#include<cmath>
+#define inf 1e-9
+using namespace std;
+
+float dis(float x1, float y1, float x2, float y2){
+    return sqrt((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2));
+}
+
+bool adj[25][25], colorused[25];
+int n,color[25];
+float position[25][2];
+
+int main(int argc, const char * argv[])
+{
+    int nc = 1;
+    while(cin>>n, n){
+        memset(adj,0,sizeof(adj));
+        memset(color,-1,sizeof(color));
+        for(int i =  0; i < n; i++)
+            cin >> position[i][0] >> position[i][1];
+        
+        for(int i = 0; i < n; i++)
+            for(int j = i+1; j < n; j++)
+                if(dis(position[i][0],position[i][1],position[j][0],position[j][1])<20+inf){
+                    adj[i][j] =adj[j][i] =1;
+                }
+        
+        
+        int res = 0;
+        for(int i = 0; i < n; i++){
+            memset(colorused,0,sizeof(colorused));
+            for(int j = 0; j < n; j++)
+                if(adj[i][j]&&color[j]>=0)
+                    colorused[color[j]] = 1;
+            for(int j = 0; j < n; j++)
+                if(colorused[j]==0){
+                    color[i] = j;
+                    res = max(res,j);
+                    break;
+                }
+        }
+        cout << "The towers in case " << nc++<<" can be covered in " << res+1 <<" frequencies." << endl;
+    }
+    return 0;
+}
+

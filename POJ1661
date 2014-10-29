@@ -1,0 +1,101 @@
+//
+//  main.cpp
+//  POJ1661
+//
+//  Created by B-YMac on 14-10-6.
+//  Copyright (c) 2014年 B-YMac. All rights reserved.
+//
+
+#include <iostream>
+#include<algorithm>
+#include<queue>
+using namespace std;
+
+int n,x,y,Max,m,reach[1005][2];
+
+struct stair{
+    int x[2],h;
+}ss[1005];
+
+bool operator <(const stair &a, const stair &b){
+    return a.h > b.h;
+}
+
+struct node{
+    int t,id,end;
+    node(int a, int b, int c): t(a), id(b), end(c){}
+};
+
+bool operator <(const node &a, const node &b){
+    return a.t > b.t;
+}
+
+int dijk(){
+    memset(reach,-1,sizeof(reach));
+    
+    priority_queue<node> q;
+    q.push(node(0,0,0));
+    
+    while(!q.empty()){
+        node t = q.top();
+        q.pop();
+        
+        int id = t.id, end = t.end, reachtime = t.t, h = ss[id].h, x = ss[id].x[end];
+        if(id==m-1)
+            return reachtime;
+        
+        if(reach[id][end]>=0)
+            continue;
+        
+        reach[id][end] = reachtime;
+        //cout << id << ' ' << x << ' '<< reachtime << ' ' <<h << endl;
+        int next = -1;
+        for(int j = id+1; j<m&&ss[j].h+Max>=h; j++){
+            if(ss[j].h<h&&ss[j].x[0]<=x&&ss[j].x[1]>=x){
+                next = j;
+                break;
+            }
+        }
+        
+        if(next>=0){
+            int vertitime = h-ss[next].h;
+            if(next==m-1){
+                q.push(node(reachtime+vertitime,m-1,0));
+            }
+            else{
+                q.push(node(reachtime+vertitime+abs(x-ss[next].x[0]),next,0));
+                q.push(node(reachtime+vertitime+abs(x-ss[next].x[1]),next,1));
+            }
+        }
+    }
+    
+    return -1;
+}
+
+int main(int argc, const char * argv[])
+{
+    int nc;
+    cin >> nc;
+    while(nc--){
+        cin >> n >> x >> y >> Max;
+        ss[0].x[0] = ss[0].x[1] = x, ss[0].h = y;
+        
+        m = 1;
+        for(int i = 1; i <= n; i++){
+            int a, b, c;
+            cin >> a >> b >> c;
+            if(c < ss[0].h)
+                ss[m].x[0] = a, ss[m].x[1] = b, ss[m].h = c, m++;
+        }
+        ss[m].x[0] = -20001, ss[m].x[1] = 20001, ss[m].h = 0, m++;
+        
+        sort(ss,ss+m);
+        
+        int res = dijk();
+        
+        cout << res << endl;
+    }
+    
+    return 0;
+}
+

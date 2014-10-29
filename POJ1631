@@ -1,0 +1,49 @@
+//
+//  main.cpp
+//  POJ1631
+//
+//  Created by B-YMac on 14-9-19.
+//  Copyright (c) 2014年 B-YMac. All rights reserved.
+//
+
+#include <iostream>
+using namespace std;
+
+int p, input[40001], a[40001], len;
+
+int main(int argc, const char * argv[])
+{
+    int nc;
+    scanf("%d", &nc);
+    while(nc--){
+        scanf("%d", &p);
+        len = 0;
+        int Max = -1;
+        for(int i = 0; i < p; i++){
+            scanf("%d", &input[i]);
+            
+            if(input[i]>Max)
+                a[len++] = input[i], Max = input[i];
+            else{
+                if(input[i]<a[0])
+                    a[0] = input[i];
+                else{
+                    int l = 0, h = len-1;
+                    while(l<h-1){
+                        int mid = (l+h)/2;
+                        
+                        if(a[mid]<input[i])
+                            l = mid;
+                        else
+                            h = mid;
+                    }
+                    a[h] = input[i];
+                }
+                Max = a[len-1];
+            }
+        }
+        cout << len << endl;
+    }
+    return 0;
+}
+

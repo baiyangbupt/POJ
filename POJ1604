@@ -1,0 +1,61 @@
+//
+//  main.cpp
+//  POJ1604
+//
+//  Created by B-YMac on 14-8-23.
+//  Copyright (c) 2014年 B-YMac. All rights reserved.
+//
+
+#include <iostream>
+using namespace std;
+
+int get5(int p){
+    int res = 0;
+    while(p/5){
+        res+=p/5;
+        p/=5;
+    }
+    return res;
+}
+
+
+int get2(int p){
+    int res = 0;
+    while(p/2){
+        res+=p/2;
+        p/=2;
+    }
+    return res;
+}
+
+
+int main(int argc, const char * argv[])
+{
+    int n;
+    while(cin>>n){
+        int multi2 = get2(n)-get5(n);
+        int res = 1;
+        
+        int base = 2;
+        while(multi2){
+            res*=base;
+            res%=10;
+            multi2--;
+        }
+        
+        for(int i = 1; i <= n; i++){
+            int t =  i;
+            while(t%2==0)
+                t/=2;
+            while(t%5==0)
+                t/=5;
+            
+            t%=10;
+            res*=t;
+            res%=10;
+        }
+        printf("%5d -> %d\n", n, res);
+    }
+    return 0;
+}
+

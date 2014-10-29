@@ -1,0 +1,60 @@
+//
+//  main.cpp
+//  POJ1624
+//
+//  Created by B-YMac on 14-9-14.
+//  Copyright (c) 2014年 B-YMac. All rights reserved.
+//
+
+#include <iostream>
+#include<iomanip>
+#include<cmath>
+#define inf 1e-9
+using namespace std;
+
+struct point{
+    double x,y;
+}pp[20];
+
+double calarea(int st, int ed){
+    double res = 0;
+    
+    if(ed-st<2)
+        return 0;
+    
+    for(int i = st+1; i < ed; i++)
+        res += (pp[i].x-pp[st].x)*(pp[i+1].y-pp[st].y)-(pp[i].y-pp[st].y)*(pp[i+1].x-pp[st].x);
+    return fabs(res)/2;
+}
+
+int main(int argc, const char * argv[])
+{
+    int nc = 1;
+    while(cin>>pp[0].x>>pp[0].y>>pp[2].x>>pp[2].y>>pp[4].x>>pp[4].y>>pp[6].x>>pp[6].y){
+        if(pp[0].x<inf&&pp[0].y<inf&&pp[2].x<inf&&pp[2].y<inf&&pp[4].x<inf&&pp[4].y<inf&&pp[6].x<inf&&pp[6].y<inf)
+            break;
+        
+        for(int i = 1; i < 8; i+=2){
+            pp[i].x = (pp[i-1].x+pp[(i+1)%8].x)/2;
+            pp[i].y = (pp[i-1].y+pp[(i+1)%8].y)/2;
+        }
+        for(int i = 8; i < 16; i++)
+            pp[i].x = pp[i-8].x, pp[i].y = pp[i-8].y;
+        
+        double dif = 1e9, res1, res2;
+        
+        for(int i = 0; i < 8; i++)
+            for(int j = i+1; j < 8; j++){
+                double t1 = calarea(i,j);
+                double t2 = calarea(j,i+8);
+                //cout << t1 << ' '<< t2 << endl;
+                if(fabs(t1-t2)<dif){
+                    dif = fabs(t1-t2);
+                    res1 = min(t1,t2), res2 = max(t1,t2);
+                }
+            }
+        cout << "Cake " << nc++ << ": " <<setiosflags(ios::fixed) << setprecision(3) << res1 << ' ' << res2 << endl;
+    }
+    return 0;
+}
+

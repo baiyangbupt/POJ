@@ -1,0 +1,188 @@
+//
+//  main.cpp
+//  POJ1475
+//
+//  Created by B-YMac on 14-7-20.
+//  Copyright (c) 2014年 B-YMac. All rights reserved.
+//
+
+#include <iostream>
+#include<queue>
+using namespace std;
+
+char grid[21][21];
+int r,c,sr,sc,br,bc,tr,tc,epr,epc;
+bool visit[21][21][21][21];
+int path[21][21][21][21];
+
+struct node{
+    int pr,pc,br,bc,pushnum,step;
+    node(int a, int b, int c, int d, int e, int f):pr(a), pc(b), br(c), bc(d),pushnum(e),step(f){}
+};
+
+bool operator<(const node &a, const node(b)) {
+    if(a.pushnum==b.pushnum)
+        return a.step>b.step;
+    return a.pushnum>b.pushnum;
+}
+
+bool bfs(){
+    node t = node(sr,sc,br,bc,0,0);
+    priority_queue<node> q;
+    q.push(t);
+    while(!q.empty()){
+        t = q.top();
+        q.pop();
+        
+        int pr = t.pr, pc = t.pc, nbr = t.br, nbc = t.bc, pushnum = t.pushnum,step = t.step;
+        //cout << pr << ' ' << pc << ' ' << nbr << ' ' << nbc << endl;
+        if(nbr==tr&&nbc==tc){
+            epr = pr, epc = pc;
+            return 1;
+        }
+        
+        visit[pr][pc][nbr][nbc] = 1;
+        
+        if(abs(pr-nbr)+abs(pc-nbc)>1){
+            if(pr>0&&grid[pr-1][pc]=='.'&&visit[pr-1][pc][nbr][nbc]==0){
+                q.push(node(pr-1,pc,nbr,nbc,pushnum,step+1));
+                path[pr-1][pc][nbr][nbc] = 0;
+            }
+            if(pr<r-1&&grid[pr+1][pc]=='.'&&visit[pr+1][pc][nbr][nbc]==0){
+                q.push(node(pr+1,pc,nbr,nbc,pushnum,step+1));
+                path[pr+1][pc][nbr][nbc] = 1;
+            }
+            if(pc>0&&grid[pr][pc-1]=='.'&&visit[pr][pc-1][nbr][nbc]==0){
+                q.push(node(pr,pc-1,nbr,nbc,pushnum,step+1));
+                path[pr][pc-1][nbr][nbc] = 2;
+            }
+            if(pc<c-1&&grid[pr][pc+1]=='.'&&visit[pr][pc+1][nbr][nbc]==0){
+                q.push(node(pr,pc+1,nbr,nbc,pushnum,step+1));
+                path[pr][pc+1][nbr][nbc] = 3;
+            }
+        }
+        else{
+            if(pr>nbr){
+                if(nbr>0&&grid[nbr-1][nbc]=='.'&&visit[pr-1][pc][nbr-1][nbc]==0){
+                    q.push(node(pr-1,pc,nbr-1,nbc,pushnum+1,step+1));
+                    path[pr-1][pc][nbr-1][nbc] = 4;
+                }
+                if(pr<r-1&&grid[pr+1][pc]=='.'&&visit[pr+1][pc][nbr][nbc]==0){
+                    q.push(node(pr+1,pc,nbr,nbc,pushnum,step+1));
+                    path[pr+1][pc][nbr][nbc] = 1;
+                }
+                if(pc>0&&grid[pr][pc-1]=='.'&&visit[pr][pc-1][nbr][nbc]==0){
+                    q.push(node(pr,pc-1,nbr,nbc,pushnum,step+1));
+                    path[pr][pc-1][nbr][nbc] = 2;
+                }
+                if(pc<c-1&&grid[pr][pc+1]=='.'&&visit[pr][pc+1][nbr][nbc]==0){
+                    q.push(node(pr,pc+1,nbr,nbc,pushnum,step+1));
+                    path[pr][pc+1][nbr][nbc] = 3;
+                }
+            }
+            else if(pr<nbr){
+                if(nbr<r-1&&grid[nbr+1][nbc]=='.'&&visit[pr+1][pc][nbr+1][nbc]==0){
+                    q.push(node(pr+1,pc,nbr+1,nbc,pushnum+1,step+1));
+                    path[pr+1][pc][nbr+1][nbc] = 5;
+                }
+                if(pr>0&&grid[pr-1][pc]=='.'&&visit[pr-1][pc][nbr][nbc]==0){
+                    q.push(node(pr-1,pc,nbr,nbc,pushnum,step+1));
+                    path[pr-1][pc][nbr][nbc] = 0;
+                }
+                if(pc>0&&grid[pr][pc-1]=='.'&&visit[pr][pc-1][nbr][nbc]==0){
+                    q.push(node(pr,pc-1,nbr,nbc,pushnum,step+1));
+                    path[pr][pc-1][nbr][nbc] = 2;
+                }
+                if(pc<c-1&&grid[pr][pc+1]=='.'&&visit[pr][pc+1][nbr][nbc]==0){
+                    q.push(node(pr,pc+1,nbr,nbc,pushnum,step+1));
+                    path[pr][pc+1][nbr][nbc] = 3;
+                }
+            }
+            else if(pc>nbc){
+                if(nbc>0&&grid[nbr][nbc-1]=='.'&&visit[pr][pc-1][nbr][nbc-1]==0){
+                    q.push(node(pr,pc-1,nbr,nbc-1,pushnum+1,step+1));
+                    path[pr][pc-1][nbr][nbc-1] = 6;
+                }
+                if(pr>0&&grid[pr-1][pc]=='.'&&visit[pr-1][pc][nbr][nbc]==0){
+                    q.push(node(pr-1,pc,nbr,nbc,pushnum,step+1));
+                    path[pr-1][pc][nbr][nbc] = 0;
+                }
+                if(pr<r-1&&grid[pr+1][pc]=='.'&&visit[pr+1][pc][nbr][nbc]==0){
+                    q.push(node(pr+1,pc,nbr,nbc,pushnum,step+1));
+                    path[pr+1][pc][nbr][nbc] = 1;
+                }
+                if(pc<c-1&&grid[pr][pc+1]=='.'&&visit[pr][pc+1][nbr][nbc]==0){
+                    q.push(node(pr,pc+1,nbr,nbc,pushnum,step+1));
+                    path[pr][pc+1][nbr][nbc] = 3;
+                }
+            }
+            else{
+                if(nbc<c-1&&grid[nbr][nbc+1]=='.'&&visit[pr][pc+1][nbr][nbc+1]==0){
+                    q.push(node(pr,pc+1,nbr,nbc+1,pushnum+1,step+1));
+                    path[pr][pc+1][nbr][nbc+1] = 7;
+                }
+                if(pr>0&&grid[pr-1][pc]=='.'&&visit[pr-1][pc][nbr][nbc]==0){
+                    q.push(node(pr-1,pc,nbr,nbc,pushnum,step+1));
+                    path[pr-1][pc][nbr][nbc] = 0;
+                }
+                if(pr<r-1&&grid[pr+1][pc]=='.'&&visit[pr+1][pc][nbr][nbc]==0){
+                    q.push(node(pr+1,pc,nbr,nbc,pushnum,step+1));
+                    path[pr+1][pc][nbr][nbc] = 1;
+                }
+                if(pc>0&&grid[pr][pc-1]=='.'&&visit[pr][pc-1][nbr][nbc]==0){
+                    q.push(node(pr,pc-1,nbr,nbc,pushnum,step+1));
+                    path[pr][pc-1][nbr][nbc] = 2;
+                }
+            }
+        }
+    }
+    return 0;
+}
+
+void print(int personr, int personc, int boxr, int boxc){
+    //cout << personr<< ' ' << personc << ' ' << boxr << ' '<< boxc << endl;
+    if(personr==sr&&personc==sc&&boxr==br&&boxc==bc)
+        return;
+    
+    int d = path[personr][personc][boxr][boxc];
+    switch(d){
+        case 0: print(personr+1,personc,boxr,boxc); cout << 'n'; break;
+        case 1: print(personr-1,personc,boxr,boxc); cout << 's'; break;
+        case 2: print(personr,personc+1,boxr,boxc); cout << 'w'; break;
+        case 3: print(personr,personc-1,boxr,boxc); cout << 'e'; break;
+        case 4: print(personr+1,personc,boxr+1,boxc); cout << 'N'; break;
+        case 5: print(personr-1,personc,boxr-1,boxc); cout << 'S'; break;
+        case 6: print(personr,personc+1,boxr,boxc+1); cout << 'W'; break;
+        case 7: print(personr,personc-1,boxr,boxc-1); cout << 'E'; break;
+    }
+}
+
+int main(int argc, const char * argv[])
+{
+    int cnt = 1;
+    while(cin>>r>>c&&(r||c)) {
+        cout << "Maze #" << cnt++ << endl;
+        memset(visit,0,sizeof(visit));
+        for(int i = 0; i < r; i++)
+            for(int j = 0; j < c; j++){
+                cin >> grid[i][j];
+                if(grid[i][j]=='S')
+                    sr = i, sc = j, grid[i][j] = '.';
+                else if(grid[i][j]=='B')
+                    br = i, bc = j, grid[i][j] = '.';
+                else if(grid[i][j]=='T')
+                    tr = i, tc = j, grid[i][j] ='.';
+            }
+        memset(visit,0,sizeof(visit));
+        if(bfs()){
+            print(epr,epc,tr,tc);
+            cout << endl;
+        }
+        else
+            cout << "Impossible." << endl;
+        cout << endl;
+        
+    }
+    return 0;
+}
+

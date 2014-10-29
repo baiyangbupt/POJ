@@ -1,0 +1,93 @@
+//
+//  main.cpp
+//  POJ1523
+//
+//  Created by B-YMac on 14-8-9.
+//  Copyright (c) 2014年 B-YMac. All rights reserved.
+//
+
+#include <iostream>
+using namespace std;
+
+const int EMAX = 100000, NMAX = 1005;
+
+struct node{
+    int v,next;
+}ee[EMAX];
+
+int firstedge[NMAX], cnt, cutseg[NMAX], dfn[NMAX], idx, low[NMAX];
+bool iscut[NMAX];
+
+void add(int a, int b){
+    ee[cnt].v = b;
+    ee[cnt].next = firstedge[a];
+    firstedge[a] = cnt++;
+    
+    ee[cnt].v = a;
+    ee[cnt].next = firstedge[b];
+    firstedge[b] = cnt++;
+}
+
+void tarjan(int p, int pre, int rt){
+    dfn[p] = low[p] = idx++;
+    int cut = 1;
+    int child = 0;
+    for(int i = firstedge[p]; i!=-1; i= ee[i].next){
+        int v = ee[i].v;
+        if(dfn[v]>=0&&v!=pre)
+            low[p] = min(low[p],dfn[v]);
+        if(dfn[v]<0){
+            child++;
+            tarjan(v,p,rt);
+            low[p] = min(low[p],low[v]);
+            if(p==rt&&child>1||p!=rt&&dfn[p]<=low[v]){
+                cutseg[p] = ++cut;
+            }
+        }
+        
+    }
+    
+}
+
+int main(int argc, const char * argv[])
+{
+    int a,b;
+    int nc = 1;
+    while(cin>>a, a){
+        int nmax, st = a;
+        cnt = 0;
+        memset(cutseg,0,sizeof(cutseg));
+        memset(firstedge,-1,sizeof(firstedge));
+        memset(dfn,-1,sizeof(dfn));
+        memset(low,-1,sizeof(low));
+        idx = 0;
+        cin >> b;
+        nmax = max(a, b);
+        add(a,b);
+        
+        while(cin>>a, a){
+            cin >> b;
+            add(a,b);
+            nmax = max(a,nmax);
+            nmax = max(b,nmax);
+        }
+        
+        tarjan(st,-1,st);
+        
+        cout << "Network #" << nc++<<endl;
+        int has = 0;
+        for(int i = 1; i <= nmax; i++){
+            if(cutseg[i]>0){
+                has = 1;
+                cout << "  SPF node " << i << " leaves " << cutseg[i] << " subnets" << endl;
+                //cout << low[i] << ' '<< dfn[i] << endl;
+            }
+        }
+        if(has==0)
+            cout << "  No SPF nodes" << endl;
+        cout << endl;
+    }
+    
+    return 0;
+}
+

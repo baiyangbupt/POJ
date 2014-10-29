@@ -1,0 +1,84 @@
+//
+//  main.cpp
+//  POJ1629
+//
+//  Created by B-YMac on 14-9-18.
+//  Copyright (c) 2014年 B-YMac. All rights reserved.
+//
+
+#include <iostream>
+#include<string>
+#include<algorithm>
+using namespace std;
+
+char grid[11][11];
+bool visit[11][11];
+int n,m,p, dx[4] = {0,0,1,-1}, dy[4] = {1,-1,0,0};
+string dict[101];
+
+struct node{
+    int x,y,pre,now;
+    node(int a, int b, int c, int d): x(a), y(b), pre(c), now(d){}
+};
+
+bool dfs(int cur);
+
+bool innerdfs(int x, int y, int curindex, int cur){
+    if(curindex==dict[cur].size()-1&&dfs(cur+1))
+        return 1;
+    
+    for(int i = 0; i < 4; i++){
+        int nx = x+dx[i], ny = y+dy[i];
+        if(nx<n&&nx>=0&&ny<m&&ny>=0&&visit[nx][ny]==0&&grid[nx][ny]==dict[cur][curindex+1]){
+            visit[nx][ny] = 1;
+            if(innerdfs(nx,ny,curindex+1,cur))
+                return 1;
+            visit[nx][ny] = 0;
+        }
+    }
+    
+    return 0;
+}
+
+bool dfs(int cur){
+    if(cur==p)
+        return 1;
+    
+    for(int i = 0; i < n; i++)
+        for(int j = 0; j < m; j++){
+            //cout << grid[i][j] << ' '<< dict[cur][0] << endl;
+            if(grid[i][j]==dict[cur][0]&&visit[i][j]==0){
+                visit[i][j] = 1;
+                if(innerdfs(i,j,0,cur))
+                    return 1;
+                visit[i][j] = 0;
+            }
+        }
+    
+    return 0;
+}
+
+int main(int argc, const char * argv[])
+{
+    cin >> n >> m >> p;
+    for(int i = 0; i <n; i++)
+        for(int j = 0; j < m; j++)
+            cin >> grid[i][j];
+    for(int i = 0; i < p; i++){
+        cin >> dict[i];
+    }
+    
+    memset(visit,0,sizeof(visit));
+    
+    dfs(0);
+    string s;
+    for(int i = 0; i < n; i++)
+        for(int j = 0; j < m; j++)
+            if(visit[i][j]==0)
+                s.push_back(grid[i][j]);
+    
+    sort(s.begin(),s.end());
+    cout << s << endl;
+    return 0;
+}
+

@@ -1,0 +1,37 @@
+//
+//  main.cpp
+//  POJ1528
+//
+//  Created by B-YMac on 14-8-9.
+//  Copyright (c) 2014年 B-YMac. All rights reserved.
+//
+
+#include <iostream>
+using namespace std;
+
+int pdsum(int p){
+    int res =  0, i;
+    for(i = 1; i <=p/2; i++)
+        if(p%i==0)
+            res+=i;
+    return res;
+}
+
+int main(int argc, const char * argv[])
+{
+    cout << "PERFECTION OUTPUT" << endl;
+    int n;
+    while(cin>>n,n){
+        printf("%5d  ", n);
+        int t = pdsum(n);
+        if(t==n)
+            cout << "PERFECT" <<endl;
+        else if(t>n)
+            cout << "ABUNDANT" << endl;
+        else
+            cout << "DEFICIENT" << endl;
+    }
+    cout << "END OF OUTPUT";
+    return 0;
+}
+

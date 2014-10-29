@@ -1,0 +1,62 @@
+//
+//  main.cpp
+//  POJ1521
+//
+//  Created by B-YMac on 14-8-9.
+//  Copyright (c) 2014年 B-YMac. All rights reserved.
+//
+
+#include <iostream>
+#include<iomanip>
+#include<queue>
+#include<vector>
+#include<string>
+using namespace std;
+
+int freq[256];
+
+int main(int argc, const char * argv[])
+{
+    string s;
+    while(cin>>s&&s!="END"){
+        memset(freq,0,sizeof(freq));
+        for(int i = 0; i < s.size(); i++){
+            freq[s[i]]++;
+        }
+        
+        priority_queue<int, vector<int>, greater<int> > q;
+        int num = 0, cnt = 0;
+        for(int i = 0; i < 256; i++)
+            if(freq[i]){
+                q.push(freq[i]);
+                num++;
+                cnt+=freq[i];
+            }
+        
+        
+        if(num==1){
+            cout << 8*cnt << ' ' <<1*cnt << ' ' <<setiosflags(ios::fixed) << setprecision(1) <<  8.0 << endl;
+            continue;
+        }
+        int res = 0;
+        while(q.size()>1){
+            int t1 = q.top();
+            q.pop();
+            if(q.empty())
+                break;
+            int t2 = q.top();
+            q.pop();
+            
+            int t = t1+t2;
+            //cout << t << endl;
+            res+=t;
+            q.push(t);
+        }
+        
+        int len = s.size();
+        double ratio = (8.*len)/res;
+        cout << 8*len << ' '  <<res << ' '<<setiosflags(ios::fixed) << setprecision(1) << ratio << endl;
+    }
+    return 0;
+}
+

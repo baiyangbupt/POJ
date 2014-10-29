@@ -1,0 +1,69 @@
+//
+//  main.cpp
+//  POJ1394
+//
+//  Created by B-YMac on 14-7-6.
+//  Copyright (c) 2014年 B-YMac. All rights reserved.
+//
+
+#include <iostream>
+using namespace std;
+
+int n,k, ub;
+int nxt[1<<16][2],post[1<<16],num;
+bool visit[1<<16];
+
+void init(){
+    int base = 1<<(n-1);
+    nxt[0][0] = 0, nxt[0][1] = 1;
+    for(int i = 1; i < (1<<n); i++){
+        int t = i;
+        if(t&base) t-=base;
+        t<<=1;
+        nxt[i][0] = t;
+        nxt[i][1] = t+1;
+    }
+}
+
+bool dfs(int p, int curnum){
+    if(curnum==num)
+        return 1;
+    
+    for(int i = 0; i < 2; i++)
+        if(nxt[p][i]<ub&&visit[nxt[p][i]]==0){
+            visit[nxt[p][i]] = 1;
+            if(dfs(nxt[p][i],curnum+1)){
+                post[p] = nxt[p][i];
+                return 1;
+            }
+            visit[nxt[p][i]] = 0;
+        }
+
+    return 0;
+}
+
+int main(int argc, const char * argv[])
+{
+    while(cin>>n>>k&&n){
+        init();
+        memset(visit,0,sizeof(visit));
+        int res;
+        ub = 1<<n;
+        num = ub;
+        for(int i = 0; i < ub-1; i++){
+            memset(visit,0,sizeof(visit));
+            visit[i] = 1;
+            if(dfs(i,1)){
+                int p = i, c = 0;
+                while(c<k){
+                    p = post[p];
+                    c++;
+                }
+                res = p;
+                break;
+            }
+        }
+        cout << res << endl;
+    }
+    return 0;
+}

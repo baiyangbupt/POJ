@@ -1,0 +1,57 @@
+//
+//  main.cpp
+//  POJ1473
+//
+//  Created by B-YMac on 14-7-19.
+//  Copyright (c) 2014年 B-YMac. All rights reserved.
+//
+
+#include <iostream>
+#include<iomanip>
+#include<string>
+#include<cmath>
+using namespace std;
+
+const double unit = sqrt(2.)/2;
+
+
+int main(int argc, const char * argv[])
+{
+    string s;
+    int cnt = 1;
+    while(cin>>s,s!="END"){
+        double stx = 0, sty = 0;
+        int i = 0;
+        while(i<s.size()){
+            int step = 0;
+            while(s[i]<='9'&&s[i]>='0')
+                step = step*10+s[i]-'0', i++;
+            string temp;
+            while(s[i]!='.'&&s[i]!=',')
+                temp.push_back(s[i]),i++;
+            i++;
+            if(temp.size()==1){
+                if(temp[0]=='N')
+                    sty+=step;
+                else if(temp[0]=='S')
+                    sty-=step;
+                else if(temp[0]=='E')
+                    stx+=step;
+                else
+                    stx-=step;
+            }
+            else{
+                sty+=temp[0]=='N'?step*unit:-1*step*unit;
+                stx+=temp[1]=='E'?step*unit:-1*step*unit;
+            }
+        }
+        double d = sqrt(stx*stx+sty*sty);
+        cout << "Map #" << cnt++ << endl;
+        cout << "The treasure is located at (" << setiosflags(ios::fixed) << setprecision(3) << stx << "," << sty << ")." << endl;
+        cout << "The distance to the treasure is " << setiosflags(ios::fixed) << setprecision(3) << d<<"." << endl;
+        cout << endl;
+        
+    }
+    return 0;
+}
+

@@ -1,0 +1,29 @@
+//
+//  main.cpp
+//  POJ430
+//
+//  Created by B-YMac on 14-7-13.
+//  Copyright (c) 2014年 B-YMac. All rights reserved.
+//
+
+#include <iostream>
+using namespace std;
+
+int m,n;
+
+int main(int argc, const char * argv[])
+{
+    int nc;
+    cin >> nc;
+    while(nc--){
+        cin>>n>>m;
+        int t1 = n-(m+2)/2;
+        int t2 = (m-1)/2;
+        if((t1&t2)==t2)
+            cout << 1 << endl;
+        else
+            cout << 0 << endl;
+    }
+    return 0;
+}
+

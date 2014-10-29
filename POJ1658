@@ -1,0 +1,29 @@
+//
+//  main.cpp
+//  POJ1658
+//
+//  Created by B-YMac on 14-9-27.
+//  Copyright (c) 2014年 B-YMac. All rights reserved.
+//
+
+#include <iostream>
+using namespace std;
+
+int a[5],n;
+
+int main(int argc, const char * argv[])
+{
+    cin >> n;
+    while(n--){
+        cin >> a[0] >> a[1] >> a[2] >> a[3];
+        
+        if(a[1]*2==a[0]+a[2]&&a[2]*2==a[1]+a[3])
+            cout << a[0] << ' '<< a[1] << ' ' << a[2] << ' ' << a[3] << ' ' << 2*a[3]-a[2] << endl;
+        else
+            cout << a[0] << ' '<< a[1] << ' ' << a[2] << ' ' << a[3] << ' ' << a[3]*a[3]/a[2] << endl;
+        
+        
+    }
+    return 0;
+}
+

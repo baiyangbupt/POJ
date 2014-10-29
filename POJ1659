@@ -1,0 +1,95 @@
+//
+//  main.cpp
+//  POJ1659
+//
+//  Created by B-YMac on 14-10-5.
+//  Copyright (c) 2014年 B-YMac. All rights reserved.
+//
+
+#include <iostream>
+#include<algorithm>
+using namespace std;
+
+bool adj[11][11];
+int deg[11], a[11], n, sum;
+/* search
+bool dfs(int p){
+    if(p==sum)
+        return 1;
+    
+    for(int i = 0; i < n; i++)
+        for(int j = 0; j < n; j++)
+            if(i!=j&&a[i]&&a[j]&&adj[i][j]==0){
+                a[i]--, a[j]--;
+                adj[i][j] = adj[j][i] = 1;
+                if(dfs(p+2))
+                    return 1;
+                a[i]++,a[j]++;
+                adj[i][j] = adj[j][i] = 0;
+            }
+    
+    return 0;
+}
+*/
+
+struct node{
+    int num, id;
+}nn[11];
+
+bool operator<(const node &a, const node &b){
+    return a.num > b.num;
+}
+
+int main(int argc, const char * argv[])
+{
+    int nc;
+    cin >> nc;
+    while(nc--){
+        sum = 0;
+        cin >> n;
+        for(int i = 0; i < n; i++){
+            cin >> nn[i].num;
+            nn[i].id = i;
+        }
+        
+        memset(deg,0,sizeof(deg));
+        memset(adj,0,sizeof(adj));
+        
+        bool valid = 1;
+        int id = 0;
+        while(id<n){
+            id++;
+            
+            sort(nn,nn+n);
+            
+            int u = nn[0].id;
+            for(int i = 1; i < n&&nn[0].num; i++)
+                if(nn[i].num){
+                    int v = nn[i].id;
+                    adj[u][v] = adj[v][u] = 1;
+                    nn[0].num--, nn[i].num--;
+                }
+            if(nn[0].num){
+                valid = 0;
+                break;
+            }
+        }
+        
+        if(valid){
+            cout << "YES" << endl;
+            for(int i = 0; i < n; i++){
+                cout << adj[i][0];
+                for(int j = 1; j < n; j++)
+                    cout << ' ' << adj[i][j];
+                cout << endl;
+            }
+        }
+        else
+            cout << "NO" << endl;
+        if(nc)
+            cout << endl;
+        
+    }
+    return 0;
+}
+

@@ -1,0 +1,156 @@
+//
+//  main.cpp
+//  POJ426
+//
+//  Created by B-YMac on 14-7-12.
+//  Copyright (c) 2014年 B-YMac. All rights reserved.
+//
+
+#include <iostream>
+#include<sstream>
+#include<string>
+using namespace std;
+
+void reverse(string &s){
+    int i = 0, j = s.size()-1;
+    while(i<j){
+        swap(s[i],s[j]);
+        i++,j--;
+    }
+}
+
+string itoa(int t){
+    stringstream ss;
+    ss<<t;
+    string res;
+    ss>>res;
+    return res;
+}
+
+int table[10][10][10], cnt[10][10];
+string res;
+bool flag;
+
+void init(){
+    memset(table,-1,sizeof(table));
+    memset(cnt,0,sizeof(cnt));
+    for(int i = 0; i < 10; i++)
+        for(int j = 1; j < 10; j++){
+            for(int k = 1; k < 10; k++)
+                if(j*k%10==i){
+                    table[j][i][cnt[j][i]++] = k;
+                    //cout << i << ' '<< j << ' '<< k<<endl;
+                    //break;
+                }
+        }
+}
+
+string merge(string a, string b, int t){
+    string res;
+    
+    string temp,p1 = b.substr(0,t), p2 = b.substr(t);
+    int l = min(p2.size(), a.size());
+    int i,jinwei = 0;
+    for(i = 0; i < l; i++){
+        int t = a[i]-'0' + p2[i]-'0' +jinwei;
+        temp.push_back(t%10+'0');
+        jinwei = t/10;
+    }
+    while(i < p2.size()){
+        int t = p2[i]-'0'+jinwei;
+        temp.push_back(t%10+'0');
+        jinwei = t/10;
+        i++;
+    }
+    while(i<a.size()){
+        int t = a[i]-'0'+jinwei;
+        temp.push_back(t%10+'0');
+        jinwei = t/10;
+        i++;
+    }
+    if(jinwei)
+        temp.push_back('0'+jinwei);
+    return p1.append(temp);
+}
+
+void dfs(int s, string prod, int t, int base){
+    if(flag==1)
+        return ;
+    //cout << prod << endl;
+    if(prod.size()>100)
+        return;
+    int i = t;
+    while(i<prod.size()&&prod[i]=='0'||prod[i]=='1')
+        i++;
+    
+    if(i==prod.size()&&prod!="0"){
+        flag = 1;
+        res = prod;
+        return;
+    }
+    
+    if(t!=0&&(prod[t]=='0'||prod[t]=='1')){
+        dfs(s,prod,t+1,base);
+        return;
+    }
+    
+    int temp, add, topr;
+    string stradd,newstr;
+    
+    temp = prod[t]-'0';
+    if(t==0)
+        add = 0;
+    else
+        add = 10-temp;
+    int addd = add;
+    for(int i = 0; i < cnt[base][addd]; i++){
+        
+        topr = table[base][addd][i];
+        if(topr>0){
+            add = topr*s;
+            stradd = itoa(add);
+            reverse(stradd);
+            newstr = merge(stradd,prod,t);
+            dfs(s,newstr,t+1,base);
+        }
+    }
+    
+    if(t==0)
+        add = 1;
+    else
+        add = 11-temp;
+    addd = add;
+    for(int i = 0; i < cnt[base][addd]; i++){
+        topr = table[base][addd][i];
+        if(topr>0){
+            add = topr*s;
+            stradd = itoa(add);
+            reverse(stradd);
+            newstr = merge(stradd,prod,t);
+            dfs(s,newstr,t+1,base);
+        }
+    }
+    return;
+}
+
+int main(int argc, const char * argv[])
+{
+    int n;
+    init();
+    for(int i = 1; i < 200; i++){
+        cout << i << endl;
+        n = i;
+        n = 45;
+        int zeros = 0;
+        while(n%10==0)
+            n/=10, zeros++;
+        
+        flag = 0;
+        string prod = "0";
+        dfs(n,prod,0,n%10);
+        reverse(res);
+        cout << res << string(zeros,'0') << endl;
+    }
+    return 0;
+}
+

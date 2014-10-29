@@ -1,0 +1,56 @@
+//
+//  main.cpp
+//  POJ1476(1)
+//
+//  Created by B-YMac on 14-7-20.
+//  Copyright (c) 2014年 B-YMac. All rights reserved.
+//
+
+#include <iostream>
+using namespace std;
+
+int period[11][11], flight[11][11][33], n,k, dp[1001][11];
+
+
+int main(int argc, const char * argv[])
+{
+    int T = 1;
+    while(cin>>n>>k,n&&k){
+        for(int i = 0; i < n; i++){
+            for(int j = 0; j < n; j++)
+                if(j!=i){
+                    cin>>period[i][j];
+                    for(int k = 0; k < period[i][j]; k++)
+                        cin >> flight[i][j][k];
+                }
+        }
+        
+        memset(dp,-1,sizeof(dp));
+        dp[0][0] = 0;
+        for(int i = 1; i <= k; i++){
+            for(int j = 0; j < n; j++){
+                int t = 0x7fffffff;
+                for(int l = 0; l < n; l++)
+                    if(l!=j&&dp[i-1][l]>=0){
+                        int dd = (i-1)%period[l][j];
+                        if(flight[l][j][dd]==0)
+                            continue;
+                        t = min(t,dp[i-1][l]+flight[l][j][dd]);
+                    }
+                if(t==0x7fffffff)
+                    dp[i][j] = -1;
+                else
+                    dp[i][j] = t;
+            }
+        }
+        
+        cout << "Scenario #" << T++ << endl;
+        if(dp[k][n-1]==-1)
+            cout << "No flight possible." << endl;
+        else
+            cout << "The best flight costs " << dp[k][n-1] << '.' << endl;
+        cout << endl;
+    }
+    return 0;
+}
+

@@ -1,0 +1,92 @@
+//
+//  main.cpp
+//  POJ1470
+//
+//  Created by B-YMac on 14-7-19.
+//  Copyright (c) 2014年 B-YMac. All rights reserved.
+//
+
+#include <iostream>
+using namespace std;
+
+struct enode{
+    int v,next;
+}ee[1000];
+
+int query[905][905],firstedge[905],fa[905],n,cnt,m,aslca[905];
+bool nonrt[905],visit[905];
+
+int find(int x){
+    if(fa[x]==x)
+        return x;
+    return fa[x] = find(fa[x]);
+}
+
+void dfs(int p){
+    fa[p] = p;
+    
+    for(int i = firstedge[p]; i!=-1; i=ee[i].next){
+        int son = ee[i].v;
+        dfs(son);
+        fa[son] = p;
+    }
+    
+    visit[p] = 1;
+    for(int i = 1; i <= n; i++)
+        if(query[p][i]&&visit[i]){
+            int ff = find(i);
+            aslca[ff] +=query[p][i];
+        }
+}
+
+void input(int &x){
+    char c;
+    while(c=getchar(),c>'9'||c<'0');
+    x = c-'0';
+    while(c=getchar(),c<='9'&&c>='0')
+        x = x*10+c-'0';
+}
+
+int main(int argc, const char * argv[])
+{
+    while(cin>>n){
+        memset(firstedge,-1,sizeof(firstedge));
+        memset(query,0,sizeof(query));
+        memset(nonrt,0,sizeof(nonrt));
+        memset(aslca,0,sizeof(aslca));
+        memset(visit,0,sizeof(visit));
+        cnt = 0;
+        for(int i = 0; i < n; i++){
+            int cur,num;
+            input(cur);
+            input(num);
+            for(int j = 0; j< num; j++){
+                int t;
+                input(t);
+                ee[cnt].v = t;
+                ee[cnt].next = firstedge[cur];
+                firstedge[cur] = cnt++;
+                nonrt[t] = 1;
+            }
+        }
+        input(m);
+        for(int i = 0; i < m; i++){
+            int x,y;
+            input(x);
+            input(y);
+            query[x][y]++, query[y][x]++;
+        }
+        int rt;
+        for(int i = 1; i <=n; i++)
+            if(nonrt[i]==0){
+                rt = i;
+                break;
+            }
+        dfs(rt);
+        for(int i = 1; i<=n; i++)
+            if(aslca[i])
+                cout << i << ':' << aslca[i] << endl;
+    }
+    return 0;
+}
+

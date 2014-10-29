@@ -1,0 +1,55 @@
+//
+//  main.cpp
+//  POJ1650
+//
+//  Created by B-YMac on 14-9-27.
+//  Copyright (c) 2014年 B-YMac. All rights reserved.
+//
+
+#include <iostream>
+#include<cmath>
+using namespace std;
+
+const double inf = 1e-20;
+double input;
+int n,d,l;
+
+int bsearch(int n){
+    double t;
+    if(double(l*1.0/n)<input+inf)
+        return l;
+    
+    if(double(1*1.0/n)>input+inf)
+        return 1;
+    
+    int h = l, l = 1;
+    while(l<h-1){
+        int mid = (h+l)/2;
+        
+        if(double(mid*1.0/n)<=input)
+            l = mid;
+        else
+            h = mid;
+    }
+    
+    if(fabs(l*1.0/n-input)<fabs(h*1.0/n-input))
+        return l;
+    else
+        return h;
+}
+
+int main(int argc, const char * argv[])
+{
+    cin >> input >> l;
+    double dif = 100000, res1, res2;
+    for(int n = 1; n <= l; n++){
+        int d = bsearch(n);
+        
+        if(fabs(double(d*1.0/n)-input)<dif)
+            dif = fabs(double(d*1.0/n)-input), res1 = d, res2 = n;
+    }
+    
+    cout << res1 <<' ' << res2 << endl;
+    return 0;
+}
+

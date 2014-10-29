@@ -1,0 +1,60 @@
+//
+//  main.cpp
+//  POJ1541
+//
+//  Created by B-YMac on 14-8-10.
+//  Copyright (c) 2014年 B-YMac. All rights reserved.
+//
+
+#include <iostream>
+using namespace std;
+
+bool num[60];
+int pp[3];
+
+int main(int argc, const char * argv[])
+{
+    memset(num,0,sizeof(num));
+    for(int i = 1; i <= 20; i++)
+        for(int j = 1; j < 4; j++)
+            num[i*j] = 1;
+    num[0] = 1;
+    num[50]++;
+    pp[0] = 1, pp[1] = 3, pp[2] = 6;
+    
+    
+    int n;
+    while(cin>>n, n>=0){
+        if(n>180){
+            cout << "THE SCORE OF " << n << " CANNOT BE MADE WITH THREE DARTS." << endl;
+            cout << "**********************************************************************" << endl;
+            continue;
+        }
+        int res = 0, permu = 0;
+        for(int i = 0; i <= min(60,n); i++)
+            for(int j = i; j <= min(60,n-i); j++){
+                if(num[i]&&num[j]&&num[n-i-j]&&n-i-j>=j&&n-i-j<=60){
+                    //cout << i << ' '<< j << ' '<< n-i-j << endl;
+                    res+=1;
+                    int rep = 1;
+                    if(j>i)
+                        rep++;
+                    if(n-i-j>j)
+                        rep++;
+                    permu += pp[rep-1];
+                }
+            }
+        if(res){
+            cout << "NUMBER OF COMBINATIONS THAT SCORES " << n << " IS " << res <<'.' << endl;
+            cout << "NUMBER OF PERMUTATIONS THAT SCORES " << n << " IS " << permu << "." << endl;
+        }
+        else
+            cout << "THE SCORE OF "<< n << " CANNOT BE MADE WITH THREE DARTS." << endl;
+        cout << "**********************************************************************" << endl;
+    }
+    
+    cout << "END OF OUTPUT" << endl;
+    
+    return 0;
+}
+

@@ -1,0 +1,155 @@
+//
+//  main.cpp
+//  POJ1622
+//
+//  Created by B-YMac on 14-9-14.
+//  Copyright (c) 2014年 B-YMac. All rights reserved.
+//
+
+#include <iostream>
+#include<vector>
+#include<algorithm>
+#include<string>
+using namespace std;
+
+int H,W,n,position[11][2],horicount[25],verticount[25];
+char grid[25][25];
+
+void horimove(int shift, int left){
+    int horimax = 0;
+    for(int i = 0; i < H; i++)
+        horimax = max(horimax,horicount[i]);
+    
+    shift = min(W-horimax,shift);
+    
+    if(left){
+        for(int i = 0; i < H; i++){
+            int cnt = 0;
+            for(int j = 0; j < W; j++){
+                int remain = horicount[i]-cnt;
+                if(W-shift-j-1<remain){
+                    while(j<W-shift)
+                        grid[i][j] = 1, j++;
+                    while(j<W)
+                        grid[i][j] = 0, j++;
+                }
+                if(grid[i][j])
+                    cnt++;
+            }
+        }
+    }
+    else{
+        for(int i = 0; i < H; i++){
+            int cnt = 0;
+            for(int j = W-1; j >= 0; j--){
+                    int remain = horicount[i]-cnt;
+                    if(j-shift<remain){
+                        while(j>=shift)
+                            grid[i][j] = 1, j--;
+                        while(j>=0)
+                            grid[i][j] = 0, j--;
+                    }
+                    if(grid[i][j])
+                        cnt++;
+            }
+        }
+    }
+    
+    memset(verticount,0,sizeof(verticount));
+    for(int i = 0; i< W; i++){
+        for(int j = 0; j < H; j++)
+            verticount[i]+=grid[j][i];
+    }
+}
+
+void vertimove(int shift, int up){
+    int vertimax = 0;
+    for(int i = 0; i < W; i++)
+        vertimax = max(vertimax,verticount[i]);
+    
+    shift = min(H-vertimax,shift);
+    
+    if(up){
+        for(int i = 0; i < W; i++){
+            int cnt = 0;
+            for(int j = 0; j < H; j++){
+                    int remain = verticount[i]-cnt;
+                    if(H-shift-j-1<remain){
+                        while(j<H-shift)
+                            grid[j][i] = 1, j++;
+                        while(j<H)
+                            grid[j][i] = 0, j++;
+                    }
+                    if(grid[j][i])
+                        cnt++;
+            }
+        }
+    }
+    else{
+        for(int i = 0; i < W; i++){
+            int cnt = 0;
+            for(int j = H-1; j >= 0; j--){
+                    int remain = verticount[i]-cnt;
+                    if(j-shift<remain){
+                        while(j>=shift)
+                            grid[j][i] = 1, j--;
+                        while(j>=0)
+                            grid[j][i] = 0, j--;
+                    }
+                    if(grid[j][i])
+                        cnt++;
+            }
+        }
+    }
+    
+    memset(horicount,0,sizeof(horicount));
+    for(int i = 0; i< H; i++){
+        for(int j = 0; j < W; j++)
+            horicount[i]+=grid[i][j];
+    }
+    
+}
+
+void print(){
+    for(int i = 0; i < H; i++)
+        for(int j = 0; j < W; j++)
+            if(grid[i][j])
+                cout << " (" << i << ','<< j <<')';
+    cout << '.' << endl;
+}
+
+int main(int argc, const char * argv[])
+{
+    int nc = 1;
+    while(cin>>H>>W,H){
+        memset(horicount,0,sizeof(horicount));
+        memset(verticount,0,sizeof(verticount));
+        memset(grid,0,sizeof(grid));
+        
+        cin >> n;
+        for(int i = 0; i < n; i++){
+            cin >> position[i][0] >> position[i][1];
+            grid[position[i][0]][position[i][1]] = 1;
+            horicount[position[i][0]]++, verticount[position[i][1]]++;
+        }
+        
+        string dir;
+        int shift;
+        while(cin>>dir){
+            if(dir=="done")
+                break;
+            cin >> shift;
+            if(dir=="left"||dir=="right")
+                horimove(shift,dir=="left");
+            else
+                vertimove(shift,dir=="up");
+            
+            //print();
+        }
+        
+        cout << "Data set " << nc++<<" ends with boxes at locations";
+        print();
+    }
+    return 0;
+}
+

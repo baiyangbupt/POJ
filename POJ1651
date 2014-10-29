@@ -1,0 +1,42 @@
+//
+//  main.cpp
+//  POJ1651
+//
+//  Created by B-YMac on 14-9-26.
+//  Copyright (c) 2014年 B-YMac. All rights reserved.
+//
+
+#include <iostream>
+using namespace std;
+
+int n,dp[101][101],a[101];
+
+int main(int argc, const char * argv[])
+{
+    cin >> n;
+    
+    memset(dp,0,sizeof(dp));
+    
+    for(int i = 0; i < n; i++)
+        cin >> a[i];
+    
+    for(int i = 0; i+2 < n; i++)
+        dp[i][3] = a[i]*a[i+1]*a[i+2];
+    
+    
+    for(int len = 4; len <= n; len++){
+        for(int st = 0; st+len-1<n; st++){
+            int mm = 0x7fffffff;
+            
+            for(int prelen = 2; prelen <= len-1; prelen++)
+                mm = min(mm,dp[st][prelen]+dp[st+prelen-1][len-prelen+1]+a[st]*a[st+prelen-1]*a[st+len-1]);
+            
+            dp[st][len] = mm;
+            //cout << st << ' '<< st+len-1 << ' ' << dp[st][len] << endl;
+        }
+    }
+    
+    cout << dp[0][n] << endl;
+    return 0;
+}
+

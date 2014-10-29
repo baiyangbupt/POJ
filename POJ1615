@@ -1,0 +1,68 @@
+//
+//  main.cpp
+//  POJ1615
+//
+//  Created by B-YMac on 14-9-13.
+//  Copyright (c) 2014年 B-YMac. All rights reserved.
+//
+
+#include <iostream>
+using namespace std;
+
+int a[11][101],m,cur[11],totalcnt, cnt, len[11];
+
+int solve(){
+    memset(cur,0,sizeof(cur));
+    
+    int done = 0, prefix = 0, res = -999000;
+    while(done<totalcnt){
+        int mmindex = -1, mm = 100000;
+        for(int i = 0; i <= cnt; i++){
+            if(cur[i]==len[i])
+                continue;
+            
+            int t;
+            if(cur[i]<len[i]-1&&a[i][cur[i]]*a[i][cur[i]+1]<0){
+                t = max(prefix+a[i][cur[i]],prefix+a[i][cur[i]]+a[i][cur[i]+1]);
+                if(t<mm)
+                    mm = t, mmindex = i;
+            }
+            else if(prefix+a[i][cur[i]]<mm)
+                mm = prefix+a[i][cur[i]], mmindex = i;
+            
+        }
+        prefix=mm;
+        res = max(res,prefix);
+        cout << res << endl;
+        
+        if(cur[mmindex]<len[mmindex]-1&&a[mmindex][cur[mmindex]]*a[mmindex][cur[mmindex]+1]<0)
+            cur[mmindex]+=2, done+=2;
+        else
+            cur[mmindex]+=1, done+=1;
+    }
+    
+    return res;
+}
+
+int main(int argc, const char * argv[])
+{
+    cin >> m;
+    while(m--){
+        int subcnt = 0;
+        cnt = totalcnt = 0;
+        int t;
+        while(cin >> t&&t!=-9999){
+            if(t==9999){
+                len[cnt++] = subcnt, totalcnt+=subcnt, subcnt = 0;
+                continue;
+            }
+            a[cnt][subcnt++] = t;
+        }
+        len[cnt] = subcnt, totalcnt+=subcnt;
+        
+        int res = solve();
+        cout << res << endl;
+    }
+    return 0;
+}
+

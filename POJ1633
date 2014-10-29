@@ -1,0 +1,133 @@
+//
+//  main.cpp
+//  POJ1633
+//
+//  Created by B-YMac on 14-9-21.
+//  Copyright (c) 2014年 B-YMac. All rights reserved.
+//
+
+#include <iostream>
+#include<sstream>
+#include<string>
+using namespace std;
+
+void reverse(string &str){
+    int i = 0, j = str.size()-1;
+    while(i<j){
+        swap(str[i],str[j]);
+        i++,j--;
+    }
+}
+
+string Add(string &a, string &b){
+    string res;
+    
+    reverse(a), reverse(b);
+    
+    int i = 0, jinwei = 0;
+    for(; i < min(a.size(), b.size()); i++){
+        int t = (a[i]-'0')+(b[i]-'0')+jinwei;
+        res.push_back('0'+t%10);
+        jinwei = t/10;
+    }
+    
+    while(i<a.size()){
+        int t = a[i]-'0'+jinwei;
+        res.push_back(t%10+'0');
+        jinwei = t/10;
+        i++;
+    }
+    
+    while(i<b.size()){
+        int t = b[i]-'0'+jinwei;
+        res.push_back(t%10+'0');
+        jinwei = t/10;
+        i++;
+    }
+    
+    while(jinwei){
+        res.push_back(jinwei%10+'0');
+        jinwei /=10;
+    }
+    
+    reverse(res);
+    i = 0;
+    while(i<res.size()&&res[i]=='0')
+        i++;
+    res = res.substr(i);
+    
+    if(res.size()==0)
+        return "0";
+    return res;
+}
+
+string mul(string &a, string &b){
+    if(a=="0"||b=="0")
+        return "0";
+    
+    string res(a.size()+b.size(),'0');
+    reverse(a), reverse(b);
+    for(int i = 0; i < a.size(); i++){
+        int jinwei = 0, j = 0;
+        for(;j < b.size(); j++){
+            int t = (a[i]-'0')*(b[j]-'0')+jinwei+res[i+j]-'0';
+            res[i+j] = t%10+'0';
+            jinwei = t/10;
+        }
+        while(jinwei){
+            int t = res[i+j]-'0'+jinwei;
+            res[i+j] = t%10+'0';
+            jinwei = t/10;
+            j++;
+        }
+    }
+    
+    reverse(res);
+    int i = 0;
+    while(i<res.size()&&res[i]=='0')
+        i++;
+    res = res.substr(i);
+    
+    if(res.size()==0)
+        return "0";
+    return res;
+}
+
+string dp[60][60];
+
+string itoa(int x){
+    stringstream ss;
+    ss<<x;
+    string res;
+    ss>>res;
+    return res;
+}
+
+int main(int argc, const char * argv[])
+{
+    int n,k,nc;
+    cin >> nc;
+    for(int i = 0; i <= 52; i++)
+        for(int j = 0; j <= 52; j++)
+            dp[i][j] = "0";
+    
+    dp[1][1] = "1";
+    for(int i = 2; i <= 52; i++){
+        for(int j = 1; j <= i; j++){
+            string a = itoa(j), b = itoa(2*i-j);
+            a = mul(dp[i-1][j],a);
+            b = mul(b,dp[i-1][j-1]);
+            dp[i][j] = Add(a,b);
+        }
+    }
+    while(nc--){
+        cin >> n >> k;
+        
+        if(k>n)
+            cout << 0 << endl;
+        else
+            cout << dp[n][k] << endl;
+    }
+    return 0;
+}
+

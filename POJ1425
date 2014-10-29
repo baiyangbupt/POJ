@@ -1,0 +1,52 @@
+//
+//  main.cpp
+//  POJ1425
+//
+//  Created by B-YMac on 14-7-12.
+//  Copyright (c) 2014年 B-YMac. All rights reserved.
+//
+
+#include <iostream>
+#include<iomanip>
+#include<cmath>
+using namespace std;
+
+double getf1(int n){
+    double res = 0, num = 0;
+    for(int len = 1; len <= n; len++){
+        num += pow((n-1)*1.0,len+1);
+        res += len*pow((n-1)*1.0,len+1);
+    }
+    return res/num;
+}
+
+double getf2(int n){
+    double res = 0, num = 0, st = n;
+    for(int len = 1; len <= n-1; len++){
+        st*=n-len;
+        num+=st;
+        res+=len*st;
+    }
+    return res/num;
+}
+
+double getf3(int n){
+    double res = 0, num = 0, st = n;
+    for(int med = 2; med < n; med++){
+        st*=n-med;
+        num+=st;
+        res+=(med+1)*st;
+    }
+    return res/num;
+}
+
+int main(int argc, const char * argv[])
+{
+    int n;
+    while(cin>>n&&n){
+        getf1(n);
+        cout << setiosflags(ios::fixed) << setprecision(4) << getf1(n) << ' ' << getf2(n) << ' ' << getf3(n) << endl;
+    }
+    return 0;
+}
+

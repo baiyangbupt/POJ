@@ -1,0 +1,74 @@
+//
+//  main.cpp
+//  POJ1590
+//
+//  Created by B-YMac on 14-8-17.
+//  Copyright (c) 2014年 B-YMac. All rights reserved.
+//
+
+#include <iostream>
+#include<string>
+using namespace std;
+
+int revmap[256];
+
+void init(){
+    memset(revmap,-1,sizeof(revmap));
+    revmap['A'] = 'A'; revmap['M'] = 'M'; revmap['Y'] = 'Y';
+    revmap['Z'] = '5'; revmap['O'] = 'O'; revmap['1'] = '1';
+    revmap['2'] = 'S'; revmap['E'] = '3'; revmap['3'] = 'E';
+    revmap['S'] = '2'; revmap['5'] = 'Z'; revmap['H'] = 'H';
+    revmap['T'] = 'T'; revmap['I'] = 'I'; revmap['U'] = 'U';
+    revmap['J'] = 'L'; revmap['V'] = 'V'; revmap['8'] = '8';
+    revmap['W'] = 'W'; revmap['L'] = 'J'; revmap['X'] = 'X';
+}
+
+bool ispalin(string &s){
+    int i = 0, j = s.size()-1;
+    
+    while(i<j){
+        if(s[i]!=s[j])
+            return 0;
+        i++, j--;
+    }
+    
+    return 1;
+}
+
+string trans(string &s){
+    string res;
+    for(int i = 0; i < s.size(); i++)
+        if(revmap[s[i]]!=-1)
+            res.push_back(char(revmap[s[i]]));
+    
+    int i = 0, j = res.size()-1;
+    while(i<j){
+        swap(res[i],res[j]);
+        i++, j--;
+    }
+    return res;
+}
+
+int main(int argc, const char * argv[])
+{
+    init();
+    string s;
+    while(cin>>s){
+        bool ispa = 0, revpa = 0;
+        if(ispalin(s))
+            ispa = 1;
+        string t = trans(s);
+        revpa = t==s;
+        if(ispa==0&&revpa==0)
+            cout << s << " -- is not a palindrome." << endl;
+        else if(ispa&&revpa==0)
+            cout << s << "- is a regular palindrome." << endl;
+        else if(ispa==0&&revpa){
+            cout << s << " -- is a mirrored string." << endl;
+        }
+        else
+            cout << s << " -- is a mirrored palindrome." << endl;
+    }
+    return 0;
+}
+

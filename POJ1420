@@ -1,0 +1,99 @@
+//
+//  main.cpp
+//  POJ1420
+//
+//  Created by B-YMac on 14-7-12.
+//  Copyright (c) 2014年 B-YMac. All rights reserved.
+//
+
+#include <iostream>
+#include<sstream>
+#include<string>
+#include<vector>
+using namespace std;
+
+int col,row;
+int atoi(string s){
+    stringstream ss;
+    ss<<s;
+    int res;
+    ss>>res;
+    return res;
+}
+string itoa(int t){
+    stringstream ss;
+    ss<<t;
+    string res;
+    ss>>res;
+    return res;
+}
+
+void parse(string s, int &x, int &y){
+    int i = 0;
+    while(s[i]<='Z'&&s[i]>='A') i++;
+    x = atoi(s.substr(i))-1;
+    
+    string t = s.substr(0,i);
+    int res = 0;
+    for(int i = 0; i < t.size(); i++){
+        res*=26;
+        res+=t[i]-'A'+1;
+    }
+    y = res-1;
+}
+
+string dfs(int i, int j, vector<vector<string> > &vv){
+    if(vv[i][j][0]<='9'&&vv[i][j][0]>='0')
+        return vv[i][j];
+    
+    string s = vv[i][j];
+    s = s.substr(1);
+    int res = 0;
+    string temp;
+    for(int i = 0; i < s.size(); i++)
+        if(s[i]=='+'&&temp.size()>0){
+            int ni, nj;
+            parse(temp,ni,nj);
+            res += atoi(dfs(ni,nj,vv));
+            temp.clear();
+        }
+        else
+            temp.push_back(s[i]);
+    int ni,nj;
+    parse(temp,ni,nj);
+    res+=atoi(dfs(ni,nj,vv));
+    return vv[i][j] = itoa(res);
+}
+
+int main(int argc, const char * argv[])
+{
+    int nc;
+    cin >> nc;
+    while(nc--){
+        vector<vector<string> > vv;
+        cin >> col >> row;
+        for(int i = 0; i < row; i++){
+            vector<string> v;
+            for(int j = 0; j < col; j++){
+                string s;
+                cin >> s;
+                v.push_back(s);
+            }
+            vv.push_back(v);
+        }
+        
+        for(int i = 0; i < row; i++){
+            for(int j = 0; j < col; j++){
+                dfs(i,j,vv);
+            }
+        }
+        
+        for(int i = 0; i < row; i++){
+            for(int j = 0; j < col-1; j++)
+                cout<< vv[i][j] << ' ';
+            cout << vv[i][col-1] << endl;
+        }
+    }
+    return 0;
+}
+

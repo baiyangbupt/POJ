@@ -1,0 +1,48 @@
+//
+//  main.cpp
+//  POJ1663
+//
+//  Created by B-YMac on 14-10-6.
+//  Copyright (c) 2014年 B-YMac. All rights reserved.
+//
+
+#include <iostream>
+using namespace std;
+
+int main(int argc, const char * argv[])
+{
+    int nc;
+    cin >> nc;
+    while(nc--){
+        int x,y;
+        cin >> x >> y;
+        
+        if(x<0||y<0||x!=y&&x!=y+2){
+            cout << "No Number" << endl;
+            continue;
+        }
+        
+        if(x==0&&y==0){
+            cout << 0 << endl;
+            continue;
+        }
+        
+        if(x%2){
+            if(y==x){
+                cout << (x-1)*2+1 << endl;
+            }
+            else if(y==x-2){
+                cout << (x-1)*2-1 << endl;
+            }
+        }
+        else{
+            if(y==x){
+                cout << (x-2)*2+1+3 << endl;
+            }
+            else
+                cout << (x-2)*2+2 << endl;
+        }
+    }
+    return 0;
+}
+

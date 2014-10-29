@@ -1,0 +1,111 @@
+//
+//  main.cpp
+//  POJ472
+//
+//  Created by B-YMac on 14-7-19.
+//  Copyright (c) 2014年 B-YMac. All rights reserved.
+//
+
+#include <iostream>
+#include<sstream>
+#include<stack>
+#include<string>
+using namespace std;
+
+int atoi(string s){
+    stringstream ss;
+    ss<<s;
+    int res;
+    ss>>res;
+    return res;
+}
+
+int poly[12];
+
+
+int main(int argc, const char * argv[])
+{
+    int nc,cnt=1;
+    cin >> nc;
+    string s;
+    while(nc--){
+        cout << "Program #" << cnt++<<endl;
+        cout << "Runtime = ";
+        cin >> s;
+        memset(poly,0,sizeof(poly));
+        stack<string> fac;
+        fac.push("begin");
+        stack<int> toadd;
+        toadd.push(0);
+        while(!fac.empty()){
+            cin >> s;
+            if(s=="LOOP"){
+                cin >> s;
+                fac.push(s);
+                toadd.push(0);
+            }
+            else if(s=="OP"){
+                int temp, t = toadd.top();
+                toadd.pop();
+                cin >> temp;
+                toadd.push(t+temp);
+            }
+            else{
+                int t = toadd.top();
+                string ss = fac.top();
+                fac.pop();
+                toadd.pop();
+                if(ss=="begin"){
+                    poly[0]+=t;
+                    break;
+                }
+                poly[0]+=t;
+                if(ss=="n"){
+                    for(int i = 11; i > 0; i--)
+                        poly[i] = poly[i-1];
+                    poly[0] = 0;
+                }
+                else{
+                    int factor = atoi(ss);
+                    for(int i = 11; i>= 0; i--)
+                        poly[i]*=factor;
+                }
+            }
+        }
+        bool begin = 1,has = 0;
+        for(int i = 11; i >= 2; i--)
+            if(poly[i]>0){
+                has = 1;
+                if(begin==0)
+                    cout << '+';
+                else
+                    begin = 0;
+                if(poly[i]>1)
+                    cout << poly[i] << '*';
+                cout << "n^" << i;
+            }
+        if(poly[1]){
+            has = 1;
+            if(begin==0)
+                cout << '+';
+            else
+                begin = 0;
+            if(poly[1]>1)
+                cout << poly[1]<<'*';
+            cout << 'n';
+        }
+        if(poly[0]){
+            has = 1;
+            if(begin==0)
+                cout << '+';
+            cout << poly[0];
+        }
+        if(has==0)
+            cout << 0;
+        cout << endl;
+        cout << endl;
+    }
+
+    return 0;
+}
+

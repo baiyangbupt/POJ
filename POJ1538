@@ -1,0 +1,43 @@
+//
+//  main.cpp
+//  POJ1538
+//
+//  Created by B-YMac on 14-8-10.
+//  Copyright (c) 2014年 B-YMac. All rights reserved.
+//
+
+#include <iostream>
+using namespace std;
+
+int n,k;
+int a[100000];
+
+void handle(){
+    for(int i = 1; i < n; i++){
+        for(int j = n; j >= i+1; j--)
+            a[j] = a[j]-a[j-1];
+    }
+    
+    for(int i = n+1; i <= n+k; i++)
+        a[i] = 0;
+    
+    for(int i = n; i >= 1; i--){
+        for(int j = i+1; j <= n+k; j++)
+            a[j] = a[j-1]+a[j];
+    }
+    
+}
+
+int main(int argc, const char * argv[])
+{
+    while(cin>>n,n){
+        for(int i = 1; i <= n; i++)
+            cin >> a[i];
+        cin >> k;
+        handle();
+        
+        cout << "Term " << k+n << " of the sequence is " << a[k+n] << endl;
+    }
+    return 0;
+}
+

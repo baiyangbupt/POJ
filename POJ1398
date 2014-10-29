@@ -1,0 +1,39 @@
+//
+//  main.cpp
+//  POJ1398
+//
+//  Created by B-YMac on 14-7-6.
+//  Copyright (c) 2014年 B-YMac. All rights reserved.
+//
+
+#include <iostream>
+using namespace std;
+
+int s,c,a[101][101];
+
+int main(int argc, const char * argv[])
+{
+    int nc;
+    cin >> nc;
+    while(nc--){
+        cin >> s >> c;
+        for(int i = 0; i < s; i++)
+            cin >> a[s-1][i];
+        for(int i = s-2; i>=0; i--)
+            for(int j = 0; j <= i; j++)
+                a[i][j] = a[i+1][j+1]-a[i+1][j];
+        
+        for(int i = 1; i <= c; i++)
+            a[0][i] = a[0][0];
+        for(int i = 1; i < s; i++)
+            for(int j = i+1; j <= i+c; j++)
+                a[i][j] = a[i][j-1]+a[i-1][j-1];
+        
+        for(int i = s; i < s+c; i++)
+            cout << a[s-1][i] << ' ';
+        cout << endl;
+
+    }
+    return 0;
+}
+

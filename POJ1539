@@ -1,0 +1,75 @@
+//
+//  main.cpp
+//  POJ1539
+//
+//  Created by B-YMac on 14-8-10.
+//  Copyright (c) 2014年 B-YMac. All rights reserved.
+//
+
+#include <iostream>
+#include<string>
+using namespace std;
+
+bool used[26];
+int value[26];
+
+int main(int argc, const char * argv[])
+{
+    string s;
+    while(getline(cin,s)&&s!=""){
+        memset(used,0,sizeof(used));
+        for(int i = 0; i < 26; i++)
+            value[i] = i+1;
+        
+        string t;
+        for(int i = 0; i < s.size(); i++)
+            if(s[i]!=' ')
+                t.push_back(s[i]);
+        int selfplus = 0, i = 0, res = 0, add = 1;
+        while(i<t.size()){
+            selfplus = -1;
+            if(t[i]=='-')
+                selfplus = 0, i+=2;
+            else if(t[i]=='+')
+                selfplus= 1, i+=2;
+            
+            if(selfplus==1){
+                value[t[i]-'a']+=1;
+            }
+            else if(selfplus==0)
+                value[t[i]-'a']-=1;
+            
+            used[t[i]-'a'] = 1;
+            if(add)
+                res+=value[t[i]-'a'];
+            else
+                res-=value[t[i]-'a'];
+            
+            if(i+1<t.size()){
+                if(t[i+1]==t[i+2]){
+                    selfplus = t[i+1]=='+';
+                    if(selfplus)
+                        value[t[i]-'a']++;
+                    else
+                        value[t[i]-'a']--;
+                    add = t[i+3]=='+';
+                    i+=4;
+                }
+                else{
+                    add = t[i+1]=='+';
+                    i+=2;
+                }
+            }
+            else
+                break;
+        }
+        
+        cout <<"Expression: " <<  s << endl <<"    value = " << res << endl;
+        for(int i = 0; i < 26; i++)
+            if(used[i]){
+                cout <<"    " << char('a'+i) <<" = " << value[i] << endl;
+            }
+    }
+    return 0;
+}
+

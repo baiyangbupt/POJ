@@ -1,0 +1,114 @@
+//
+//  main.cpp
+//  POJ1613
+//
+//  Created by B-YMac on 14-9-8.
+//  Copyright (c) 2014年 B-YMac. All rights reserved.
+//
+
+#include <iostream>
+#include<queue>
+#include<string>
+using namespace std;
+
+struct node{
+    int time, id;
+    node(int a, int b): time(a), id(b){}
+};
+
+bool operator<(const node &a, const node &b){
+    return a.time > b.time;
+}
+
+int n,m,s,des,schedule[501][36], cost[501],sumofend[501], reachtime[51], len[501];
+bool adj[51][501];
+
+void parse(string &s, int num){
+    int i = 0, t = 0, from, to;
+    while(s[i]==' ')
+        i++;
+    
+    while(s[i]!=' ')
+        t = t*10+s[i]-'0', i++;
+    from = t, t = 0;
+    while(s[i]==' ')
+        i++;
+    while(s[i]!=' ')
+        t = t*10+s[i]-'0', i++;
+    to = t, t = 0;
+    adj[from][num] = adj[to][num] = 1;
+    sumofend[num] = from+to;
+    
+    while(s[i]==' ')
+        i++;
+    while(s[i]!=' ')
+        t = t*10+s[i]-'0', i++;
+    cost[num] = t, t = 0;
+    
+    int cnt = 0;
+    while(i<s.size()){
+        while(i<s.size()&&s[i]==' ')
+            i++;
+        int st = i;
+        while(i<s.size()&&s[i]!=' ')
+            t = t*10+s[i]-'0', i++;
+        if(i>st)
+            schedule[num][cnt++] = t, t = 0;
+    }
+    len[num] = cnt;
+}
+
+
+int bfs(){
+    priority_queue<node> q;
+    q.push(node(0,s));
+    
+    while(!q.empty()){
+        node t=  q.top();
+        q.pop();
+        
+        int id = t.id, time = t.time;
+        if(reachtime[id]>=0)
+            continue;
+        if(id==des)
+            return time;
+        
+        reachtime[id] = time;
+        for(int i = 0; i < m; i++)
+            if(adj[id][i]){
+                int next = sumofend[i]-id;
+                if(reachtime[next]>=0)
+                    continue;
+                for(int j = 1; j < len[i]; j+=2)
+                    if(j<len[i]-1&&max(time,schedule[i][j])+cost[i]<=schedule[i][j+1]||j==len[i]-1){
+                        q.push(node(max(time,schedule[i][j])+cost[i],next));
+                        break;
+                    }
+            }
+    }
+    
+    return -1;
+}
+
+int main(int argc, const char * argv[])
+{
+    while(cin>>n, n){
+        memset(adj,0,sizeof(adj));
+        memset(reachtime,-1,sizeof(reachtime));
+        cin >> m >> s >>des;
+        cin.get();
+        for(int i = 0; i < m; i++){
+            string s;
+            getline(cin,s);
+            parse(s,i);
+        }
+        
+        int res = bfs();
+        if(res==-1)
+            cout << '*' << endl;
+        else
+            cout << res << endl;
+    }
+    return 0;
+}
+

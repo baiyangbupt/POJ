@@ -1,0 +1,112 @@
+//
+//  main.cpp
+//  POJ480
+//
+//  Created by B-YMac on 14-7-20.
+//  Copyright (c) 2014年 B-YMac. All rights reserved.
+//
+
+#include <iostream>
+#include<queue>
+#include<stack>
+using namespace std;
+
+char op[5][4] ={"ADD", "DIV", "DUP", "MUL", "SUB"};
+int x[10],y[10],n;
+
+int test(int opseq){
+    for(int i = 0; i <n; i++){
+        stack<int> ss;
+        ss.push(x[i]);
+        int top = opseq;
+        while(top){
+            int temp = (top&1)+(top&2)+(top&4);
+            if(temp!=3&&ss.size()==1)
+                return -1;
+            if(temp==2&&ss.top()==0)
+                return -1;
+            if(temp==3){
+                int t= ss.top();
+                ss.push(t);
+                top>>=3;
+                continue;
+            }
+            int t1 = ss.top();
+            ss.pop();
+            int t,t2 = ss.top();
+            ss.pop();
+            switch(temp){
+                case 1: t = t1+t2; break;
+                case 2: t = t2/t1; break;
+                case 4: t = t2*t1; break;
+                case 5: t = t2-t1; break;
+            }
+            if(abs(t)>30000)
+                return -1;
+            ss.push(t);
+            top>>=3;
+        }
+        if(ss.size()!=1||ss.top()!=y[i])
+            return 0;
+    }
+    return 1;
+}
+
+int bfs(){
+    queue<int> q,ql;
+    q.push(0),ql.push(0);
+    while(!q.empty()){
+        int t = q.front(),l = ql.front();
+        q.pop();
+        ql.pop();
+        
+        
+        if(l>10)
+            return -1;
+        int testres = test(t);
+        if(testres==1)
+            return t;
+        if(testres==-1)
+            continue;
+        
+        for(int i = 1; i <= 5; i++){
+            int nt = t+i*(1<<(3*l));
+            q.push(nt), ql.push(l+1);
+        }
+        
+    }
+    return -1;
+}
+
+int main(int argc, const char * argv[])
+{
+    int T = 1;
+    while(cin>>n,n){
+        for(int i = 0; i < n; i++)
+            cin >> x[i];
+        for(int i = 0; i < n; i++)
+            cin >> y[i];
+        
+        int res = bfs();
+        cout << "Program " << T++ << endl;
+        if(res==0)
+            cout << "Empty sequence" << endl;
+        else if(res==-1)
+            cout << "Impossible" << endl;
+        else{
+            int begin = 1;
+            while(res){
+                int temp = (res&1)+(res&2)+(res&4);
+                if(begin==0) cout << ' ';
+                else
+                    begin = 0;
+                cout << op[temp-1];
+                res>>=3;
+            }
+            cout << endl;
+        }
+        cout << endl;
+    }
+    return 0;
+}
+

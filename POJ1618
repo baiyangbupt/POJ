@@ -1,0 +1,66 @@
+//
+//  main.cpp
+//  POJ1618
+//
+//  Created by B-YMac on 14-9-13.
+//  Copyright (c) 2014年 B-YMac. All rights reserved.
+//
+
+#include <iostream>
+#include<string>
+using namespace std;
+
+bool adj[601][601];
+int n,l,m,len,dp[601][101];
+string decor[601];
+
+void test(int i, int j){
+    int k = 1;
+    for(; k < len; k++)
+        if(decor[i][k]!=decor[j][k-1])
+            break;
+    if(k==len)
+        adj[i][j] = 1;
+    
+    for(k = 1; k < len; k++)
+        if(decor[j][k]!=decor[i][k-1])
+            break;
+    if(k==len)
+        adj[j][i] = 1;
+}
+
+
+int main(int argc, const char * argv[])
+{
+    while(cin>>n>>l>>m, n){
+        memset(adj,0,sizeof(adj));
+        for(int i = 0; i < m; i++)
+            cin >> decor[i];
+        len = decor[0].size();
+        for(int i = 0; i < m; i++)
+            for(int j = i; j < m; j++)
+                test(i,j);
+        
+        memset(dp,0,sizeof(dp));
+        for(int i = 0; i < m; i++)
+            dp[i][len] = 1;
+        for(int length = 0; length<len;length++)
+            for(int i = 0; i < m; i++)
+                dp[i][length] = 0;
+        
+        for(int ll = len+1; ll<=l; ll++){
+            for(int i = 0; i < m; i++){
+                for(int j = 0; j < m; j++)
+                    if(adj[i][j])
+                        dp[i][ll]+=dp[j][ll-1];
+            }
+        }
+        
+        int res = 0;
+        for(int i = 0; i < m; i++)
+            res+=dp[i][l];
+        cout << res << endl;
+    }
+    return 0;
+}
+

@@ -1,0 +1,39 @@
+//
+//  main.cpp
+//  POJ1542
+//
+//  Created by B-YMac on 14-8-10.
+//  Copyright (c) 2014年 B-YMac. All rights reserved.
+//
+
+#include <iostream>
+using namespace std;
+
+char start[4] = "AUG";
+char end[3][4] = {"UAA", "UAG", "UGA"};
+
+char s[100000];
+
+void reverse(char *s, int len){
+    int i = 0, j = len-1;
+    while(i<j){
+        swap(s[i],s[j]);
+        i++,j--;
+    }
+}
+
+bool chk(char *s){
+    char *st = strstr(s, start);
+    if(st==NULL)
+        return 0;
+}
+
+int main(int argc, const char * argv[])
+{
+    string s;
+    while(cin>>s&&s!="*"){
+        
+    }
+    return 0;
+}
+

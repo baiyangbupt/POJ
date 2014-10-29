@@ -1,0 +1,65 @@
+//
+//  main.cpp
+//  POJ1628
+//
+//  Created by B-YMac on 14-9-17.
+//  Copyright (c) 2014年 B-YMac. All rights reserved.
+//
+
+#include <iostream>
+#include<string>
+using namespace std;
+
+long long code(string &s){
+    long long res = 0, base = 1;
+    for(int i = 0; i < s.size(); i++){
+        if(s[i]>='a')
+            res |= (base<<(s[i]-'a'));
+        else
+            res |= (base<<(s[i]-'A'+26));
+    }
+    
+    return res;
+}
+
+string decode(long long t){
+    string res;
+    int i = 0;
+    while(t){
+        if(t&1)
+            res.push_back(i<26?'a'+i:'A'+i-26);
+        t>>=1;
+        i++;
+    }
+    
+    return res;
+}
+
+long long map[201][2];
+int n,m;
+
+int main(int argc, const char * argv[])
+{
+    cin >> m >> n;
+    string a,b,c;
+    for(int i = 0; i < m; i++){
+        cin >> a >> c >> b;
+        map[i][0] = code(a), map[i][1] = code(b);
+    }
+    
+    for(int i = 0; i < n; i++){
+        string t;
+        cin >> t;
+        long long p = code(t),st;
+        do{
+            st = p;
+            for(int j = 0; j < m; j++)
+                if((p&map[j][0])==map[j][0])
+                    p |= map[j][1];
+        }while(p!=st);
+        
+        cout << decode(p) << endl;
+    }
+    return 0;
+}
+

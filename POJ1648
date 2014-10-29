@@ -1,0 +1,65 @@
+//
+//  main.cpp
+//  POJ1648
+//
+//  Created by B-YMac on 14-9-28.
+//  Copyright (c) 2014年 B-YMac. All rights reserved.
+//
+
+#include <iostream>
+#include<set>
+#include<cmath>
+using namespace std;
+
+int N,w,e;
+
+const double inf = 1e-9;
+
+int cellofgrid(int x, int y){
+    return x/100+y/100*N;
+}
+
+bool isint(double &x){
+    int t = x;
+    return fabs(x-t)<inf;
+}
+
+
+int main(int argc, const char * argv[])
+{
+    while(cin >> N >> w >> e){
+        
+        int x = 0,y = w;
+        set<int> hash;
+        
+        double k = (e-w)*1.0/(100*N);
+        
+        for( ; x<=100*N; x++){
+            double ty = x*k+w;
+            int t = ty;
+            
+            //cout << x << ' '<< ty << ' ';
+            if(x>0&&t<100*N){
+                hash.insert(cellofgrid(x-1,t));
+                //cout << cellofgrid(x-1,t)<< ' ';
+            }
+            if(x<100*N&&t<100*N){
+                hash.insert(cellofgrid(x,t));
+                //cout << cellofgrid(x,t) << ' ';
+            }
+            
+            if(isint(ty)&&t>0){
+                //cout << cellofgrid(x,t-1) << ' ' << cellofgrid(x-1,t-1);
+                if(x<100*N&&t>0)
+                    hash.insert(cellofgrid(x,t-1));
+                if(t>0&&x>0)
+                    hash.insert(cellofgrid(x-1,t-1));
+            }
+            //cout << endl;
+        }
+        
+        cout << hash.size() << endl;
+    }
+    return 0;
+}
+

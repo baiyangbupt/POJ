@@ -1,0 +1,25 @@
+//
+//  main.cpp
+//  POJ1401
+//
+//  Created by B-YMac on 14-7-6.
+//  Copyright (c) 2014年 B-YMac. All rights reserved.
+//
+
+#include <iostream>
+using namespace std;
+
+int main(int argc, const char * argv[])
+{
+    int nc,sum,n;
+    cin >> nc;
+    while(nc--){
+        cin >> n;
+        sum = 0;
+        while(n/=5)
+            sum+=n;
+        cout << sum << endl;
+    }
+    return 0;
+}
+

@@ -1,0 +1,71 @@
+//
+//  main.cpp
+//  POJ1466
+//
+//  Created by B-YMac on 14-7-19.
+//  Copyright (c) 2014年 B-YMac. All rights reserved.
+//
+
+#include <iostream>
+#include<string>
+using namespace std;
+
+
+bool adj[501][501],visit[501];
+int n,match[501],pre[501],fa[1002];
+
+
+bool dfs(int p){
+    visit[p] = 1;
+    for(int i = 0; i < n; i++)
+        if(adj[p][i]&&visit[i]==0){
+            visit[i] = 1;
+            if(pre[i]==-1||dfs(pre[i])){
+                pre[i] = p;
+                match[p] = i;
+                return 1;
+            }
+        }
+    return 0;
+}
+
+int main(int argc, const char * argv[])
+{
+    while(cin>>n){
+        string s;
+        memset(adj,0,sizeof(adj));
+        memset(match,-1,sizeof(match));
+        memset(pre,-1,sizeof(pre));
+        for(int i = 0; i < 2*n; i++)
+            fa[i] = i;
+        for(int i = 0; i < n; i++){
+            cin >> s;
+            int j = 0, cur = 0;
+            while(j<s.size()&&s[j]!=':')
+                cur*=10, cur+=s[j]-'0',j++;
+            
+            cin >> s;
+            int num = 0;
+            j = 1;
+            while(j<s.size()&&s[j]!=')')
+                num*=10, num+=s[j]-'0',j++;
+            for(int j = 0; j < num; j++){
+                int t;
+                cin >> t;
+                adj[cur][t]  = 1;            }
+        }
+        
+        
+        int res = 0;
+        for(int i = 0; i < n; i++)
+            if(match[i]==-1){
+                memset(visit,0,sizeof(visit));
+                if(dfs(i))
+                    res++;
+        }
+        cout << n-(res+1)/2 << endl;
+    }
+
+    return 0;
+}
+

@@ -1,0 +1,81 @@
+//
+//  main.cpp
+//  POJ1429
+//
+//  Created by B-YMac on 14-7-13.
+//  Copyright (c) 2014年 B-YMac. All rights reserved.
+//
+
+#include <iostream>
+using namespace std;
+
+int m,n;
+struct enode{
+    int v, next;
+}ee[40005];
+
+int firstedge[10004],cnt,path[10004];
+bool inpath[10004];
+
+
+bool dfs(int p, int num){
+    if(inpath[p])
+        return 0;
+    
+    path[num] = p;
+    if(num==n-1)
+        return 1;
+    inpath[p] = 1;
+    for(int nn = firstedge[p]; nn!=-1; nn = ee[nn].next){
+        if(dfs(ee[nn].v,num+1))
+            return 1;
+    }
+    inpath[p] = 0;
+    return 0;
+}
+
+void print(){
+    if(n<3){
+        cout << path[0] << ' ' << path[1] << endl;
+        return;
+    }
+    if(path[1]>path[n-1]){
+        cout << 1;
+        for(int i = n-1; i > 0; i--)
+            cout << ' ' << path[i];
+        cout << endl;
+    }
+    else{
+        cout << 1;
+        for(int i = 1; i < n; i++)
+            cout << ' ' << path[i];
+        cout << endl;
+    }
+}
+
+int main(int argc, const char * argv[])
+{
+    int nc;
+    cin >> nc;
+    while(nc--){
+        cin >> n >> m;
+        cnt = 0;
+        memset(firstedge,-1,sizeof(firstedge));
+        for(int i = 0;  i< n+m; i++){
+            int x,y;
+            cin >> x >> y;
+            ee[cnt].v = y;
+            ee[cnt].next = firstedge[x];
+            firstedge[x] = cnt;
+            cnt++;
+            ee[cnt].v = x;
+            ee[cnt].next = firstedge[y];
+            firstedge[y] = cnt++;
+        }
+        memset(inpath,0,sizeof(inpath));
+        dfs(1,0);
+        print();
+    }
+    return 0;
+}
+

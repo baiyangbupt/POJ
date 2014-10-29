@@ -1,0 +1,120 @@
+//
+//  main.cpp
+//  POJ429（1）
+//
+//  Created by B-YMac on 14-7-13.
+//  Copyright (c) 2014年 B-YMac. All rights reserved.
+//
+
+#include <iostream>
+#include <queue>
+using namespace std;
+
+struct enode{
+    int v,next;
+    bool valid;
+}ee[40004];
+
+int n,m,deg[10004],num;
+int path[10004][2],binum[10004],firstedge[10004];
+
+void solve(){
+    memset(path,-1,sizeof(path));
+    memset(binum,0,sizeof(binum));
+    
+    queue<int> q;
+    
+    for(int i = 1; i<= n; i++){
+        //cout << deg[i] << endl;
+        if(deg[i]==2)
+            q.push(i);
+    }
+    int cnt = 0;
+    while(!q.empty()&&cnt<n){
+        int t = q.front();
+        q.pop();
+        if(deg[t]!=2)
+            continue;
+        
+        int side[2], l = 0;
+        for(int i = firstedge[t]; i != -1; i=ee[i].next){
+            int nxt = ee[i].v;
+            if(binum[nxt]<2){
+                if(ee[i].valid==1)
+                    path[t][binum[t]++] = nxt, path[nxt][binum[nxt]++] = t, cnt++;
+                side[l++] = nxt;
+            }
+        }
+        
+        deg[t] = 0;
+        deg[side[0]]--, deg[side[1]]--;
+        bool hasedge = 0;
+        for(int i = firstedge[side[0]]; i!=-1; i= ee[i].next)
+            if(ee[i].v==side[1]){
+                hasedge = 1;
+                break;
+            }
+        if(hasedge==0){
+            deg[side[0]]++, deg[side[1]]++;
+            ee[num].v = side[1];
+            ee[num].valid = 0;
+            ee[num].next = firstedge[side[0]];
+            firstedge[side[0]] = num;
+            num++;
+            
+            ee[num].v = side[0];
+            ee[num].valid = 0;
+            ee[num].next=  firstedge[side[1]];
+            firstedge[side[1]] = num;
+            num++;
+        }
+        
+        if(deg[side[0]]==2)
+            q.push(side[0]);
+        if(deg[side[1]]==2)
+            q.push(side[1]);
+    }
+}
+
+void print(){
+    int pre = 1, st = min(path[1][0],path[1][1]);
+    cout << 1;
+    for(int i = 1; i < n; i++){
+        cout << ' ' << st;
+        int t = st;
+        st = path[st][0]+path[st][1]-pre;
+        pre = t;
+    }
+    cout << endl;
+}
+
+int main(int argc, const char * argv[])
+{
+    int nc;
+    cin >> nc;
+    while(nc--){
+        memset(deg,0,sizeof(deg));
+        memset(firstedge,-1,sizeof(firstedge));
+        cin >> n>> m;
+        num = 0;
+        for(int i = 0; i < m+n;i++){
+            int x,y;
+            cin >> x >> y;
+            ee[num].v = y;
+            ee[num].valid = 1;
+            ee[num].next = firstedge[x];
+            firstedge[x] = num;
+            num++;
+            ee[num].v = x;
+            ee[num].valid = 1;
+            ee[num].next = firstedge[y];
+            firstedge[y] = num;
+            num++;
+            deg[x]++, deg[y]++;
+        }
+        solve();
+        print();
+    }
+    return 0;
+}
+

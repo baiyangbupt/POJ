@@ -1,0 +1,70 @@
+//
+//  main.cpp
+//  POJ1529
+//
+//  Created by B-YMac on 14-8-9.
+//  Copyright (c) 2014年 B-YMac. All rights reserved.
+//
+
+#include <iostream>
+#include<map>
+#include<string>
+using namespace std;
+
+const int NMAX = 31;
+
+int m,n,p;
+int d[NMAX][NMAX];
+map<string,int> mp;
+
+void floyd(){
+    for(int k = 0; k < m; k++)
+        for(int i = 0; i < m; i++)
+            for(int j = 0; j < m; j++)
+                if(d[i][k]>0&&d[k][j]>0&&(d[i][j]<0||d[i][j]>d[i][k]+d[k][j]))
+                    d[i][j] = d[i][k]+d[k][j];
+}
+
+int main(int argc, const char * argv[])
+{
+    int nc,ca = 1;
+    cin>>nc;
+    cout << "SHIPPING ROUTES OUTPUT" << endl << endl;
+    while(nc--){
+        memset(d,-1,sizeof(d));
+        mp.clear();
+        cin >> m >> n >> p;
+        
+        for(int i = 0; i < m; i++){
+            string t;
+            cin >> t;
+            mp[t] = i;
+        }
+        
+        for(int i = 0; i < n; i++){
+            string a,b;
+            cin >> a >> b;
+            d[mp[a]][mp[b]] = d[mp[b]][mp[a]] = 1;
+        }
+        
+        floyd();
+        cout << "DATA SET " << ca++ << endl;
+        
+        cout << endl;
+        for(int i = 0; i < p; i++){
+            int price,st,ed;
+            string a,b;
+            cin >> price >> a >> b;
+            st = mp[a], ed= mp[b];
+            if(d[st][ed]<0)
+                cout << "NO SHIPMENT POSSIBLE" << endl;
+            else
+                cout << '$' << (price*100*d[st][ed]) << endl;
+        }
+        cout << endl;
+    }
+    
+    cout << "END OF OUTPUT";
+    return 0;
+}
+
